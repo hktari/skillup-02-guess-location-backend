@@ -5,11 +5,12 @@ import { AuthController } from './auth/auth.controller';
 import { UserModule } from './user/user.module';
 import { LocationModule } from './location/location.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
+import { DatabaseModule } from './database/database.module';
 import cors = require('cors')
 
 @Global()
 @Module({
-  imports: [UserModule, LocationModule],
+  imports: [UserModule, LocationModule, DatabaseModule],
   controllers: [AppController, AuthController],
   providers: [AppService]
 })
