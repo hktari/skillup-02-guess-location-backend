@@ -11,15 +11,13 @@ export class LocationController {
 
   @Post()
   create(@Body() createLocationDto: CreateLocationDto) {
-    this.locationService.create({
+    return this.locationService.create({
       address: createLocationDto.address,
       lat: createLocationDto.lat,
       lng: createLocationDto.lng,
       userId: "0",
       imageUrl: 'TODO'
     })
-
-    return createLocationDto
   }
 
   @Get()
