@@ -5,7 +5,11 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-    constructor(@Inject(UserRepository) private userProvider: Repository<UserEntity>) {
+    constructor(@Inject(UserRepository) private userRepository: Repository<UserEntity>) {
 
+    }
+
+    getAll() {
+        return this.userRepository.findAndCount()
     }
 }

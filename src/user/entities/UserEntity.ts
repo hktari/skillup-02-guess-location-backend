@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { LocationEntity } from 'src/location/entities/LocationEntity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class UserEntity {
@@ -16,4 +17,7 @@ export class UserEntity {
 
     @Column({ nullable: true })
     imageUrl: string;
+
+    @OneToMany(() => LocationEntity, (location) => location.user)
+    locations: LocationEntity[]
 }

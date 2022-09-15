@@ -9,7 +9,7 @@ export class UserController {
 
   @Get()
   getAll() {
-    return []
+    return this.userService.getAll()
   }
 
   @Get(':id')
