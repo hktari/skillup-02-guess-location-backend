@@ -1,3 +1,3 @@
-class User{
+export class UserEntity{
     
 }
