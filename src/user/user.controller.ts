@@ -13,7 +13,7 @@ export class UserController {
   }
 
   @Get(':id')
-  getSingle(@Param('id') id: string): User {
+  getSingle(@Param('id') id: string){
 
   }
 }
