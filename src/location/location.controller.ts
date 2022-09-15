@@ -18,7 +18,7 @@ export class LocationController {
       userId: "0",
       imageUrl: 'TODO'
     })
-    
+
     return createLocationDto
   }
 
@@ -44,4 +44,6 @@ export class LocationController {
   delete(@Param('id') id: string) {
     return `this deletes the location: ${id}`
   }
+
+  
 }
