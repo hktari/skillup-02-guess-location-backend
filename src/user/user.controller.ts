@@ -29,6 +29,6 @@ export class UserController {
 
   @Get(':id')
   getSingle(@Param('id') id: string) {
-
+    return this.userService.getOne(id)
   }
 }
