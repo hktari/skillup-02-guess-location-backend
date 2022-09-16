@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { LocationController } from './location.controller';
 import { GuessLocationController } from './guess-location.controller';
-import { DatabaseModule } from 'src/database/database.module';
+import { DatabaseModule } from '../database/database.module';
 import { locationProviders } from './providers/location.providers';
-import { UserModule } from 'src/user/user.module';
-import { userProviders } from 'src/user/providers/user.provider';
-import { UserService } from 'src/user/user.service';
+import { UserModule } from '../user/user.module';
+import { userProviders } from '../user/providers/user.provider';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [DatabaseModule, UserModule],

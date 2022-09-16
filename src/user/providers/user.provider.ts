@@ -1,5 +1,5 @@
 
-import { DatabaseConnection, UserRepository } from 'src/common/constants';
+import { DatabaseConnection, UserRepository } from '../../common/constants';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 

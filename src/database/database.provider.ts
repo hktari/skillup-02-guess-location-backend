@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { DatabaseConnection } from '../common/constants'
+import { DatabaseConnection } from '../../common/constants'
 
 export const databaseProviders = [
     {

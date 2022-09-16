@@ -1,10 +1,12 @@
 import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { identity } from 'rxjs';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserEntity } from '../user/entities/user.entity';
 import CreateLocationDto from './dto/CreateLocationDto';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { LocationService } from './location.service';
 
+@Roles('user')
 @Controller('location')
 export class LocationController {
   constructor(private readonly locationService: LocationService) { }

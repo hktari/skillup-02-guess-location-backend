@@ -1,5 +1,5 @@
 import { IsString, IsNumber} from 'class-validator';
-import { Base64ToByteTransform } from 'src/common/decorators/base64.transform';
+import { Base64ToByteTransform } from '../../common/decorators/base64.transform';
 
 export class CreateUserDto{
     @IsString()

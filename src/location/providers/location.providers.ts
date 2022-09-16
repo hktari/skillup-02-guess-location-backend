@@ -1,4 +1,4 @@
-import { DatabaseConnection, LocationRepository } from "src/common/constants";
+import { DatabaseConnection, LocationRepository } from "../../common/constants";
 import { DataSource } from 'typeorm'
 import { LocationEntity } from "../entities/location.entity";
 
