@@ -1,18 +1,19 @@
 import { DataSource } from 'typeorm';
-import { DatabaseConnection } from '../../common/constants'
+import { DatabaseConnection } from '../common/constants'
+import { ConfigService } from '@nestjs/config'
 
 export const databaseProviders = [
     {
         provide: DatabaseConnection,
-        useFactory: async () => {
+        useFactory: async (configService: ConfigService) => {
             console.log(__dirname + '/../**/*.entity{.ts,.js}')
             const dataSource = new DataSource({
                 type: 'postgres',
-                host: 'localhost',
-                port: 5432,
-                username: 'hktari',
-                password: '123qweAsd.',
-                database: 'geotagger',
+                host: configService.get<string>('PGHOST'),
+                port: configService.get<number>('PGPORT'),
+                username: configService.get<string>('PGUSER'),
+                password: configService.get<string>('PGPASSWORD'),
+                database: configService.get<string>('PGDATABASE'),
                 entities: [
                     __dirname + '/../**/*.entity{.ts,.js}',
                 ],
@@ -22,5 +23,6 @@ export const databaseProviders = [
 
             return dataSource.initialize();
         },
+        inject: [ConfigService]
     },
 ];

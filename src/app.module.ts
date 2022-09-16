@@ -7,10 +7,11 @@ import { LocationModule } from './location/location.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { DatabaseModule } from './database/database.module';
 import cors = require('cors')
+import { ConfigModule } from '@nestjs/config';
 
 @Global()
 @Module({
-  imports: [UserModule, LocationModule, DatabaseModule],
+  imports: [UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, })],
   controllers: [AppController, AuthController],
   providers: [AppService]
 })
