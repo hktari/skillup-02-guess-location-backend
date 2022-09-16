@@ -3,5 +3,4 @@ export interface Location {
     lat: number
     lng: number
     imageUrl: string
-    userId: string
 }

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/common/constants';
-import { UserEntity } from 'src/user/entities/UserEntity';
 import { Repository } from 'typeorm';
+import { UserEntity } from './entities/user.entity';
+import { User } from './user.interface';
 
 @Injectable()
 export class UserService {
@@ -9,7 +10,16 @@ export class UserService {
 
     }
 
+    create(user: User) {
+        const userEntity = this.userRepository.create(user)
+        return this.userRepository.save(userEntity)
+    }
+
     getAll() {
         return this.userRepository.findAndCount()
+    }
+
+    getOne(id: string) {
+        return this.userRepository.findOne({ where: { id } })
     }
 }

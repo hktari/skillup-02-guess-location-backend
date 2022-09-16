@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import { UserEntity } from 'src/user/entities/UserEntity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { User } from '../common/decorators/user.decorator'
 import { GuessLocationDto } from './dto/GuessLocationDto';
 

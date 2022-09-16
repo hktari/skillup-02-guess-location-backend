@@ -2,27 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { LocationRepository, UserRepository } from 'src/common/constants';
 import { Location } from './interfaces/Location.interface'
 import { Repository } from 'typeorm'
-import { LocationEntity } from './entities/LocationEntity';
-import { UserEntity } from 'src/user/entities/UserEntity';
+import { UserService } from 'src/user/user.service';
+import { LocationEntity } from './entities/location.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 @Injectable()
 export class LocationService {
     constructor(
         @Inject(LocationRepository) private locationRepository: Repository<LocationEntity>,
-        @Inject(UserRepository) private userRepository: Repository<UserEntity>) {
+        @Inject(UserService) private userService: UserService) {
 
     }
 
-    async create(location: Location) {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: location.userId
-            }
-        })
-
-        if (!user) {
-            throw new Error(`user with id: ${location.userId} not found`)
-        }
-
+    async create(user: UserEntity, location: Location) {
         const locationEntity = this.locationRepository.create()
         locationEntity.address = location.address
         locationEntity.imageUrl = location.imageUrl

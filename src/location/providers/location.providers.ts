@@ -1,6 +1,6 @@
 import { DatabaseConnection, LocationRepository } from "src/common/constants";
 import { DataSource } from 'typeorm'
-import { LocationEntity } from "../entities/LocationEntity";
+import { LocationEntity } from "../entities/location.entity";
 
 export const locationProviders = [
     {

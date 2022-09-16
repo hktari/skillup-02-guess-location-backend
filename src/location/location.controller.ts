@@ -1,5 +1,6 @@
 import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { identity } from 'rxjs';
+import { UserEntity } from 'src/user/entities/user.entity';
 import CreateLocationDto from './dto/CreateLocationDto';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { LocationService } from './location.service';
@@ -11,13 +12,18 @@ export class LocationController {
 
   @Post()
   create(@Body() createLocationDto: CreateLocationDto) {
-    return this.locationService.create({
-      address: createLocationDto.address,
-      lat: createLocationDto.lat,
-      lng: createLocationDto.lng,
-      userId: "0",
-      imageUrl: 'TODO'
-    })
+    // if (!user) {
+    //   throw new Error(`user with id: ${location.userId} not found`)
+    // }
+    let t = new UserEntity()
+    // TODO : user
+    return this.locationService.create(t,
+      {
+        address: createLocationDto.address,
+        lat: createLocationDto.lat,
+        lng: createLocationDto.lng,
+        imageUrl: 'TODO'
+      })
   }
 
   @Get()
@@ -43,5 +49,5 @@ export class LocationController {
     return `this deletes the location: ${id}`
   }
 
-  
+
 }

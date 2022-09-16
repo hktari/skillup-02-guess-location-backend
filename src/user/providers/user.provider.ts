@@ -1,7 +1,8 @@
 
 import { DatabaseConnection, UserRepository } from 'src/common/constants';
 import { DataSource } from 'typeorm';
-import { UserEntity } from '../entities/UserEntity';
+import { UserEntity } from '../entities/user.entity';
+
 
 export const userProviders = [
     {
