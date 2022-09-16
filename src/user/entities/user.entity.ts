@@ -1,6 +1,7 @@
 import { LocationEntity } from '../../location/entities/location.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
+import { Exclude } from 'class-transformer'
 @Entity()
 export class UserEntity {
     @PrimaryGeneratedColumn("uuid")
@@ -14,6 +15,10 @@ export class UserEntity {
 
     @Column({ nullable: false })
     email: string;
+
+    @Column()
+    @Exclude()
+    password: string;
 
     @Column({ nullable: true })
     imageUrl: string;

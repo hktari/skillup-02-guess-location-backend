@@ -8,11 +8,13 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { DatabaseModule } from './database/database.module';
 import cors = require('cors')
 import { ConfigModule } from '@nestjs/config';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 
 @Global()
 @Module({
-  imports: [UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, })],
-  controllers: [AppController, AuthController],
+  imports: [UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, }), AuthModule],
+  controllers: [AppController],
   providers: [AppService]
 })
 export class AppModule implements NestModule {

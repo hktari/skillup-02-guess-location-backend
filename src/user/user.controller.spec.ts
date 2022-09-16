@@ -29,6 +29,7 @@ describe('UserController', () => {
       const result = {
         id: '0',
         email: 'test@exaple.com',
+        password: 'secret',
         firstName: 'joža',
         lastName: 'grumpl',
         imageUrl: 'http://...',
@@ -39,5 +40,22 @@ describe('UserController', () => {
 
       expect(await controller.getSingle('0')).toBe(result)
     })
+
+    // todo: move to e2e tests
+    // it('should not contain the password', async () => {
+    //   const result = new UserEntity()
+    //   result.id = '0'
+    //   result.email = 'test@exaple.com'
+    //   result.password = 'secret'
+    //   result.firstName = 'joža'
+    //   result.lastName = 'grumpl'
+    //   result.imageUrl = 'http://...'
+    //   result.locations = []
+
+    //   jest.spyOn(service, 'getOne').mockImplementation((_) => Promise.resolve(result))
+
+    //   const transformedResult = await controller.getSingle('0')
+    //   expect(transformedResult.password).toBeUndefined()
+    // })
   })
 });

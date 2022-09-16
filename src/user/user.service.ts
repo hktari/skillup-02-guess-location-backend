@@ -19,7 +19,7 @@ export class UserService {
         return this.userRepository.findAndCount()
     }
 
-    getOne(id: string) {
-        return this.userRepository.findOne({ where: { id } })
+    getOne(email: string) {
+        return this.userRepository.findOne({ where: { email } })
     }
 }
