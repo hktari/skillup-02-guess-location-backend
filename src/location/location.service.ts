@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { LocationRepository, UserRepository } from '../common/constants';
 import { Location } from './interfaces/Location.interface'
 import { Repository } from 'typeorm'
@@ -13,6 +13,10 @@ export class LocationService {
     }
 
     async create(user: UserEntity, location: Location) {
+        if(!user){
+            throw new Error('user is not defined')
+        }
+
         const locationEntity = this.locationRepository.create()
         locationEntity.address = location.address
         locationEntity.imageUrl = location.imageUrl

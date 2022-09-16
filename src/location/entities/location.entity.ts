@@ -1,5 +1,5 @@
 import { UserEntity } from '../../user/entities/user.entity'
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne  } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
 
 @Entity()
 export class LocationEntity {
@@ -12,10 +12,14 @@ export class LocationEntity {
     @Column()
     imageUrl: string
 
-    @Column()
+    @Column({
+        type: 'float'
+    })
     lat: number
 
-    @Column()
+    @Column({
+        type: 'float'
+    })
     lng: number
 
     @Column()
