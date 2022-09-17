@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserEntity } from '../user/entities/user.entity';
 import CreateLocationDto from './dto/CreateLocationDto';
@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Roles('user')
 @Controller('location')
+@UseInterceptors(ClassSerializerInterceptor)
 export class LocationController {
   constructor(private readonly locationService: LocationService) { }
 
