@@ -122,6 +122,23 @@ describe('Auth', () => {
     })
   })
 
+
+  describe('/POST auth/forgot-password', () => {
+    it('should return 200 when email exists', (done) => {
+      const forgotPasswordDto = {
+        email: existingUser.email
+      }
+
+      request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send(forgotPasswordDto)
+        .then(res => {
+          expect(res.statusCode).toBe(200)
+          done()
+        })
+    })
+  })
+
   afterAll(async () => {
     await app?.close();
   });
