@@ -13,23 +13,30 @@ export default class UserSeeder implements Seeder {
         console.log('locations...')
 
         const userRepository = dataSource.getRepository(UserEntity);
-        const existingUser = await userRepository.findOne({
-            where: {
-                email: 'existing.user@example.com',
-            }
+        let existingUser = await userRepository.create({
+            email: 'existing.location.user@example.com',
+            firstName: 'location',
+            lastName: 'has',
+            password: 'secret'
         })
 
-        const repository = dataSource.getRepository(LocationEntity);
-        existingLocation = repository.create()
+        existingUser = await userRepository.save(existingUser)
+
+
+        const locationRepository = dataSource.getRepository(LocationEntity);
+        existingLocation = locationRepository.create()
         existingLocation.address = 'Mariborska ulica 23'
         existingLocation.lat = 22.123122
         existingLocation.lng = 11.022322
         existingLocation.imageUrl = 'https://example.com'
         existingLocation.user = existingUser
-        existingLocation = await repository.save(existingLocation)
+        existingLocation = await locationRepository.save(existingLocation)
 
 
 
+        const locationFactory = await factoryManager.get(LocationEntity)
+
+        await locationFactory.saveMany(4, { user: existingUser })
         // ---------------------------------------------------
 
         // const userFactory = await factoryManager.get(LocationEntity);
