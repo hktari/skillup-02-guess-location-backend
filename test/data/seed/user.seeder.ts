@@ -10,9 +10,9 @@ export default class UserSeeder implements Seeder {
         const repository = dataSource.getRepository(UserEntity);
         await repository.insert([
             {
-                firstName: 'Caleb',
-                lastName: 'Barrows',
-                email: 'caleb.barrows@gmail.com',
+                firstName: 'Joža',
+                lastName: 'Mošt',
+                email: 'existing.user@example.com',
                 password: 'secret'
             }
         ]);
