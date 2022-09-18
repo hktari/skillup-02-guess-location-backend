@@ -20,12 +20,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 
     "pretest:e2e": "npm run db:create && npm run db:seed",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "env-cmd -f ./test.env jest --config ./test/jest-e2e.json",
     "posttest:e2e": "npm run db:drop",
     
     "db:create": "sudo -u postgres createdb geotagger_test && sudo -u postgres psql -d geotagger_test -f ./db/install-extension.sql",
     "db:drop": "sudo -u postgres dropdb geotagger_test",
-    "db:seed": "ts-node ./db/seeddb-index.ts"
+    "db:seed": "env-cmd -f ./test.env ts-node ./db/seeddb-index.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
