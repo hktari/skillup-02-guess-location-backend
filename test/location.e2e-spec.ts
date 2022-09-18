@@ -52,6 +52,34 @@ describe('Location', () => {
         })
     })
 
+    describe('GET /location/random', () => {
+        it('should return 200 and a location object', (done) => {
+            request(app.getHttpServer())
+                .get('/location/random')
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toMatchObject(new LocationEntity())
+                    done()
+                })
+        })
+
+        it('should return at least 3 different object out of 10 request', (done) => {
+            const requestsList: Promise<LocationEntity>[] = []
+            for (let i = 0; i < 10; i++) {
+                requestsList.push(
+                    request(app.getHttpServer())
+                        .get('/location/random')
+                        .then(res => res.body as LocationEntity))
+            }
+
+            Promise.all(requestsList).then(res => {
+                const uniqueLocations = new Set(res.map(location => location.id))
+                expect(uniqueLocations.size).toBeGreaterThanOrEqual(3)
+                done()
+            }, err => done(err))
+        })
+    })
+
     afterAll(async () => {
         await app?.close();
     })
