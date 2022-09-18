@@ -7,9 +7,11 @@ export default class UserSeeder implements Seeder {
         dataSource: DataSource,
         factoryManager: SeederFactoryManager
     ): Promise<any> {
+        console.log('users ....')
         const repository = dataSource.getRepository(UserEntity);
         await repository.insert([
             {
+                id: '50e48a6f90bb4e79908418ccd7ce5735',
                 firstName: 'Joža',
                 lastName: 'Mošt',
                 email: 'existing.user@example.com',
