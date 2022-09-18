@@ -11,6 +11,9 @@ import { UserRepository } from '../src/common/constants';
 import { PaginatedCollection } from '../src/common/interface/PaginatedCollecton';
 import { LocationEntity } from '../src/location/entities/location.entity';
 import CreateLocationDto from '../src/location/dto/CreateLocationDto';
+import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
+import { existingLocation } from './data/seed/location.seeder';
+import { GuessLocationEntity } from '../src/location/entities/guess-location.entity';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -107,6 +110,49 @@ describe('Location', () => {
                     .then(res => {
                         expect(res.statusCode).toBe(200)
                         expect(res.body).toMatchObject(new LocationEntity())
+                        done()
+                    })
+            })
+        })
+    })
+
+
+    describe('POST /location/guess/:id', () => {
+        it('should return 401 when not authenticated', (done) => {
+            request(app.getHttpServer())
+                .post('/location/guess/1')
+                .then(res => {
+                    expect(res.statusCode).toBe(401)
+                    done()
+                })
+        })
+
+        it('should return 404 when location is non-existent', (done) => {
+            getAuthToken().then(token => {
+                request(app.getHttpServer())
+                    .post('/location/guess/no-exist')
+                    .auth(token, { type: 'bearer' })
+                    .then(res => {
+                        expect(res.statusCode).toBe(404)
+                        done()
+                    })
+            })
+        })
+
+        it('should return 200 and guess result object when location exists', (done) => {
+            const guessLocationDto: GuessLocationDto = {
+                address: 'Titova ulica 22',
+                lat: 22.232322,
+                lng: 11.232322
+            }
+
+            getAuthToken().then(token => {
+                request(app.getHttpServer())
+                    .post('/location/guess/' + existingLocation.id)
+                    .auth(token, { type: 'bearer' })
+                    .then(res => {
+                        expect(res.statusCode).toBe(200)
+                        expect(res.body).toMatchObject(new GuessLocationEntity())
                         done()
                     })
             })
