@@ -28,7 +28,11 @@ export class AuthService {
     }
 
     async signup(signupDto: SignupDto) {
+        const existingUser = await this.usersService.getOne(signupDto.email)
 
+        if (existingUser) {
+            throw new BadRequestException('User with that email already exists.')
+        }
         // TODO: has pwd using bcrypt
         const hashedPwd = signupDto.password
 

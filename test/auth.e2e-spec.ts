@@ -79,7 +79,11 @@ describe('Auth', () => {
         .send(signupDto)
         .then(res => {
           expect(res.statusCode).toBe(201)
-          expect(res.body).toBe(result)
+          expect(res.body).toHaveProperty('email', signupDto.email)
+          expect(res.body).toHaveProperty('firstName', signupDto.firstName)
+          expect(res.body).toHaveProperty('lastName', signupDto.lastName)
+          expect(res.body).toHaveProperty('email', signupDto.email)
+          expect(res.body).not.toHaveProperty('password')
           done()
         })
     })

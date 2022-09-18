@@ -19,8 +19,8 @@ export const databaseProviders = [
                 ],
                 uuidExtension: 'pgcrypto',
                 synchronize: true,
+                dropSchema: true
             });
-
             return dataSource.initialize();
         },
         inject: [ConfigService]
