@@ -20,4 +20,6 @@ export class AuthController {
     async signup(@Body() signupDto: SignupDto) {
         return this.authService.signup(signupDto)
     }
+
+    // todo: forgot-password
 }
