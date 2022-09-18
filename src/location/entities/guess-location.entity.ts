@@ -26,4 +26,10 @@ export class GuessLocationEntity {
 
     @Column()
     address: string
+
+    @Column({
+        type: 'float',
+        nullable: false
+    })
+    errorInMeters: number
 }
