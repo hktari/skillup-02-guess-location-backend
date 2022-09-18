@@ -26,23 +26,29 @@ describe('Auth', () => {
     await app.init();
 
     userRepository = moduleRef.get<Repository<UserEntity>>(UserRepository)
+
+    await createTestData()
   });
 
-  it(`/POST auth/login`, (done) => {
-    const loginUser = userRepository.create()
-    loginUser.email = 'test@example.com'
-    loginUser.firstName = 'scott'
-    loginUser.lastName = 'johnson'
-    loginUser.password = 'secret'
-    userRepository.save(loginUser)
 
+  let existingUser;
+  async function createTestData() {
+    existingUser = userRepository.create()
+    existingUser.email = 'test@example.com'
+    existingUser.firstName = 'scott'
+    existingUser.lastName = 'johnson'
+    existingUser.password = 'secret'
+    await userRepository.save(existingUser)
+  }
+
+  it(`/POST auth/login`, (done) => {
     const loginDto = {
-      email: loginUser.email,
-      password: loginUser.password
+      email: existingUser.email,
+      password: existingUser.password
     }
 
-    
-    return request(app.getHttpServer())
+
+    request(app.getHttpServer())
       .post('/auth/login')
       .send(loginDto)
       .then((response) => {
@@ -51,6 +57,48 @@ describe('Auth', () => {
         done()
       });
   });
+
+
+  describe('/POST auth/signup', () => {
+    it('should return 201 on unique credentials', (done) => {
+      const signupDto = {
+        email: 'uniqueuser@example.com',
+        password: 'secret',
+        firstName: 'unique',
+        lastName: 'user'
+      }
+      const result = {
+        email: signupDto.email,
+        firstName: signupDto.firstName,
+        lastName: signupDto.lastName,
+        imageUrl: null
+      }
+
+      request(app.getHttpServer())
+        .post('/auth/signup')
+        .send(signupDto)
+        .then(res => {
+          expect(res.statusCode).toBe(201)
+          expect(res.body).toBe(result)
+          done()
+        })
+    })
+
+    it('should return 400 on duplicate email', (done) => {
+      const signupDto = {
+        ...existingUser,
+      }
+
+      request(app.getHttpServer())
+        .post('/auth/signup')
+        .send(signupDto)
+        .then((response) => {
+          expect(response.statusCode).toBe(400)
+          expect(response.body).toHaveProperty('error')
+          done()
+        })
+    })
+  })
 
   afterAll(async () => {
     await app?.close();
