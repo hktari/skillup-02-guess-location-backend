@@ -41,22 +41,40 @@ describe('Auth', () => {
     await userRepository.save(existingUser)
   }
 
-  it(`/POST auth/login`, (done) => {
-    const loginDto = {
-      email: existingUser.email,
-      password: existingUser.password
-    }
+  describe('/POST auth/login', () => {
+
+    it(`should return access_token when correct credentials`, (done) => {
+      const loginDto = {
+        email: existingUser.email,
+        password: existingUser.password
+      }
 
 
-    request(app.getHttpServer())
-      .post('/auth/login')
-      .send(loginDto)
-      .then((response) => {
-        expect(response.statusCode).toBe(201)
-        expect(response.body).toHaveProperty('access_token')
-        done()
-      });
-  });
+      request(app.getHttpServer())
+        .post('/auth/login')
+        .send(loginDto)
+        .then((response) => {
+          expect(response.statusCode).toBe(201)
+          expect(response.body).toHaveProperty('access_token')
+          done()
+        });
+    });
+
+    it('should return 400 when invalid credentials', (done) => {
+      const invalidLoginDto = {
+        email: 'nonexisting@example.com',
+        password: 'secret'
+      }
+
+      request(app.getHttpServer())
+        .post('/auth/login')
+        .send(invalidLoginDto)
+        .then(res => {
+          expect(res.statusCode).toBe(400)
+          done()
+        })
+    })
+  })
 
 
   describe('/POST auth/signup', () => {
