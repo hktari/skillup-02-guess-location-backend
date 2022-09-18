@@ -40,21 +40,45 @@ describe('User', () => {
                 .expect(404)
         })
 
-        it('should return 200 and a user object', () => {
-            return request(app.getHttpServer())
+        it('should return 200 and a user object', (done) => {
+            request(app.getHttpServer())
                 .get('/user/' + existingUser.id)
-                .expect(200, res => {
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
                     expect(res.body).toContainEqual(existingUser)
+                    done()
                 })
         })
 
-        it('user object should contain locations', () => {
-            return request(app.getHttpServer())
+        it('user object should contain locations', (done) => {
+            request(app.getHttpServer())
                 .get('/user/' + existingUser.id)
-                .expect(res => {
+                .then(res => {
                     expect(res.body).toHaveProperty('locations')
+                    expect(res.body.locations).toHaveLength(10)
+                    for (const location of res.body.locations) {
+                        expect(location).toHaveProperty('address')
+                        expect(location).toHaveProperty('imageUrl')
+                        expect(location).toHaveProperty('lat')
+                        expect(location).toHaveProperty('lng')
+                    }
                 })
         })
+
+        it('user object should contain guesses', (done) => {
+            request(app.getHttpServer())
+            .get('/user/'+existingUser.id)
+            .then(res => {
+                expect(res.body).toHaveProperty('guesses')
+                expect(res.body.guesses).toHaveLength(5)
+                for (const guess of res.body.guesses) {
+                    expect(guess).toHaveProperty('address')
+                    expect(guess).toHaveProperty('lat')
+                    expect(guess).toHaveProperty('lng')
+                    expect(guess).toHaveProperty('errorInMeters')
+                }
+            })
+         })
 
     })
 })

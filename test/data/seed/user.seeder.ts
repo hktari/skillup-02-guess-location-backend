@@ -2,7 +2,7 @@ import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../../../src/user/entities/user.entity';
 import { LocationEntity } from '../../../src/location/entities/location.entity';
-import { GuessLocationEntity } from 'src/location/entities/guess-location.entity';
+import { GuessLocationEntity } from '../../../src/location/entities/guess-location.entity';
 
 export const existingUser: UserEntity = {
     id: '50e48a6f90bb4e79908418ccd7ce5735',
