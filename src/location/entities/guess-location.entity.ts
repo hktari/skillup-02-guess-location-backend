@@ -14,9 +14,6 @@ export class GuessLocationEntity {
     @ManyToOne(() => LocationEntity, (location) => location.guesses)
     location: LocationEntity
 
-    @Column()
-    imageUrl: string
-
     @Column({
         type: 'float'
     })
