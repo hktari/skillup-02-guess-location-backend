@@ -2,6 +2,7 @@ import { LocationEntity } from '../../location/entities/location.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { Exclude } from 'class-transformer'
+import { GuessLocationEntity } from '../../location/entities/guess-location.entity';
 @Entity()
 export class UserEntity {
     @PrimaryGeneratedColumn("uuid")
@@ -25,4 +26,7 @@ export class UserEntity {
 
     @OneToMany(() => LocationEntity, (location) => location.user)
     locations: LocationEntity[]
+
+    @OneToMany(() => GuessLocationEntity, (guessLocation) => guessLocation.user)
+    guesses: GuessLocationEntity[]
 }

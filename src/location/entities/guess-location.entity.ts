@@ -1,17 +1,18 @@
 import { UserEntity } from '../../user/entities/user.entity'
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm'
-import { GuessLocationEntity } from './guess-location.entity'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { LocationEntity } from './location.entity'
+
 
 @Entity()
-export class LocationEntity {
+export class GuessLocationEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string
 
     @ManyToOne(() => UserEntity, (user) => user.locations)
     user: UserEntity
 
-    @OneToMany(() => GuessLocationEntity, (guessLocation) => guessLocation.location)
-    guesses: GuessLocationEntity[]
+    @ManyToOne(() => LocationEntity, (location) => location.guesses)
+    location: LocationEntity
 
     @Column()
     imageUrl: string
