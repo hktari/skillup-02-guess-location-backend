@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Put } from '@nestjs/common';
 import { AuthModule } from '../src/auth/auth.module';
 import { DatabaseModule } from '../src/database/database.module';
 import { ConfigModule } from '@nestjs/config';
@@ -14,6 +14,7 @@ import { GuessLocationEntity } from '../src/location/entities/guess-location.ent
 import { getAuthToken } from './common.e2e';
 import { existingUser } from './data/seed/user.seeder';
 import { LocationModule } from '../src/location/location.module';
+import { UpdateLocationDto } from '../src/location/dto/UpdateLocationDto';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -21,7 +22,7 @@ describe('Location', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AuthModule, LocationModule,  DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            imports: [AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
         })
             // .overrideProvider(AuthService)
             // .useValue(authService)
@@ -54,12 +55,87 @@ describe('Location', () => {
                     done()
                 })
         })
-        
+
         it('should return an ordered by timestamp DESC list of locations', (done) => {
             expect(false).toBe(true)
             done()
         })
     })
+
+    describe('PUT /location/:id', () => {
+
+        it('should return 401 when not authenticated', (done) => {
+            request(app.getHttpServer())
+                .put('/location/' + existingLocation.id)
+                .then(res => {
+                    expect(res.statusCode).toBe(401)
+                    done()
+                })
+
+        })
+
+        it('should return 404 when location doesn\'t exist', (done) => {
+            getAuthToken(app, existingUser).then(token => {
+                request(app.getHttpServer())
+                    .put('/location/no-exist')
+                    .auth(token, { type: 'bearer' })
+                    .then(res => {
+                        expect(res.statusCode).toBe(404)
+                        done()
+                    })
+            })
+        })
+
+        it('should return 403 when location was added by another user', (done) => {
+            const locationUpdate: UpdateLocationDto = {
+                address: 'Prešernova ulica, Slovenj Gradec',
+                lat: 22.23123,
+                lng: 12.23232,
+            }
+
+            getAuthToken(app, existingUser).then(token => {
+                request(app.getHttpServer())
+                    .put('/location/' + existingLocation.id)
+                    .auth(token, { type: 'bearer' })
+                    .send(locationUpdate)
+                    .then(res => {
+                        expect(res.statusCode).toBe(403)
+                        done()
+                    })
+            })
+        })
+
+        it('should return 200 and updated location object', (done) => {
+            userRepository.findOneBy({ id: existingUser.id }).then(user => {
+                const location = user.locations[0]
+                const locationUpdate: UpdateLocationDto = {
+                    address: 'Prešernova ulica, Slovenj Gradec',
+                    lat: 22.23123,
+                    lng: 12.23232,
+                }
+                const result = {
+                    ...location,
+                    address: locationUpdate.address,
+                    lat: locationUpdate.lat,
+                    lng: locationUpdate.lng
+                }
+
+                getAuthToken(app, user).then(token => {
+                    request(app.getHttpServer())
+                        .put('/location/' + location.id)
+                        .auth(token, { type: 'bearer' })
+                        .send(locationUpdate)
+                        .then(res => {
+                            expect(res.statusCode).toBe(200)
+                            expect(res.body).toMatchObject(result)
+                            done()
+                        })
+                })
+
+            })
+        })
+    })
+
 
     describe('GET /location/random', () => {
         it('should return 200 and a location object', (done) => {
