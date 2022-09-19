@@ -3,7 +3,25 @@ import { DataSource } from 'typeorm';
 import { LocationEntity } from '../../../src/location/entities/location.entity';
 import { UserEntity } from '../../../src/user/entities/user.entity';
 
-export let existingLocation: LocationEntity
+export const existingLocation: LocationEntity = {
+    id: "fe2f92aa-ad96-4b0e-a71d-32457b8ee1b2",
+    address: 'Mariborska ulica 23',
+    lat: 22.123122,
+    lng: 11.022322,
+    imageUrl: 'https://example.com',
+    createdDate: new Date(),
+    guesses: [],
+    user: {
+        id: 'de5a1ff2-d494-45f1-994c-c322658ea920',
+        email: 'existing.location.user@example.com',
+        firstName: 'location',
+        lastName: 'has',
+        password: 'secret',
+        imageUrl: 'https://example.com',
+        locations: [],
+        guesses: []
+    }
+}
 
 export default class UserSeeder implements Seeder {
     public async run(
@@ -13,30 +31,16 @@ export default class UserSeeder implements Seeder {
         console.log('locations...')
 
         const userRepository = dataSource.getRepository(UserEntity);
-        let existingUser = await userRepository.create({
-            email: 'existing.location.user@example.com',
-            firstName: 'location',
-            lastName: 'has',
-            password: 'secret'
-        })
-
-        existingUser = await userRepository.save(existingUser)
-
+        await userRepository.insert(existingLocation.user)
 
         const locationRepository = dataSource.getRepository(LocationEntity);
-        existingLocation = locationRepository.create()
-        existingLocation.address = 'Mariborska ulica 23'
-        existingLocation.lat = 22.123122
-        existingLocation.lng = 11.022322
-        existingLocation.imageUrl = 'https://example.com'
-        existingLocation.user = existingUser
-        existingLocation = await locationRepository.save(existingLocation)
+        await locationRepository.insert(existingLocation)
 
 
 
         const locationFactory = await factoryManager.get(LocationEntity)
 
-        await locationFactory.saveMany(4, { user: existingUser })
+        await locationFactory.saveMany(4, { user: existingLocation.user })
         // ---------------------------------------------------
 
         // const userFactory = await factoryManager.get(LocationEntity);
