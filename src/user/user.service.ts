@@ -3,7 +3,7 @@ import { UserRepository } from '../common/constants';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { User } from './user.interface';
-import { CryptoService } from 'src/auth/crypto.service';
+import { CryptoService } from '../../src/auth/crypto.service';
 
 @Injectable()
 export class UserService {

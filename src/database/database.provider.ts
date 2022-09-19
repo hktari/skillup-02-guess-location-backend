@@ -6,7 +6,6 @@ export const databaseProviders = [
     {
         provide: DatabaseConnection,
         useFactory: async (configService: ConfigService) => {
-            console.log(__dirname + '/../**/*.entity{.ts,.js}')
             const dataSource = new DataSource({
                 type: 'postgres',
                 host: configService.get<string>('PGHOST'),
@@ -18,8 +17,8 @@ export const databaseProviders = [
                     __dirname + '/../**/*.entity{.ts,.js}',
                 ],
                 uuidExtension: 'pgcrypto',
-                synchronize: true,
-                dropSchema: true
+                // synchronize: true,
+                // dropSchema: true
             });
             return dataSource.initialize();
         },

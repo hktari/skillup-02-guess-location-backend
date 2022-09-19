@@ -7,10 +7,11 @@ import { locationProviders } from './providers/location.providers';
 import { UserModule } from '../user/user.module';
 import { userProviders } from '../user/providers/user.provider';
 import { UserService } from '../user/user.service';
+import { CryptoService } from 'src/auth/crypto.service';
 
 @Module({
   imports: [DatabaseModule, UserModule],
   controllers: [LocationController, GuessLocationController],
-  providers: [LocationService, ...locationProviders, UserService, ...userProviders]
+  providers: [LocationService, ...locationProviders, UserService, ...userProviders, CryptoService]
 })
 export class LocationModule { }
