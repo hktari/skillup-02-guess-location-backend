@@ -1,5 +1,5 @@
 import { UserEntity } from '../../user/entities/user.entity'
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm'
+import { CreateDateColumn, Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm'
 import { GuessLocationEntity } from './guess-location.entity'
 
 @Entity()
@@ -28,4 +28,7 @@ export class LocationEntity {
 
     @Column()
     address: string
+
+    @CreateDateColumn()
+    createdDate: Date
 }

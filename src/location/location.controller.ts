@@ -5,6 +5,7 @@ import CreateLocationDto from './dto/CreateLocationDto';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { LocationService } from './location.service';
 import { AuthGuard } from '@nestjs/passport';
+import { PaginationDto } from 'src/common/dto/PaginationDto';
 
 @Roles('user')
 @Controller('location')
@@ -30,7 +31,7 @@ export class LocationController {
     @Query('startIdx', new DefaultValuePipe(0), new ParseIntPipe()) startIdx: number,
     @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number
   ) {
-    return `this retrieves all locations from: ${startIdx} to ${startIdx + pageSize}`
+    return this.locationService.findAll(startIdx, pageSize)
   }
 
   @Get(':id')
@@ -39,11 +40,13 @@ export class LocationController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
     return 'this updates the location: ' + id
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   delete(@Param('id') id: string) {
     return `this deletes the location: ${id}`
   }

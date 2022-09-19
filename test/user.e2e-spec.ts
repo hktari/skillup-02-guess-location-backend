@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EqualOperator, Repository } from 'typeorm'
 import { UserEntity } from '../src/user/entities/user.entity'
 import { UserRepository } from '../src/common/constants';
-import { PaginatedCollection } from '../src/common/interface/PaginatedCollecton';
+import { PaginatedCollection } from '../src/common/interface/PaginatedCollection';
 import { LocationEntity } from '../src/location/entities/location.entity';
 import CreateLocationDto from '../src/location/dto/CreateLocationDto';
 import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';

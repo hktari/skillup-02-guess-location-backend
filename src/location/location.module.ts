@@ -7,7 +7,7 @@ import { locationProviders } from './providers/location.providers';
 import { UserModule } from '../user/user.module';
 import { userProviders } from '../user/providers/user.provider';
 import { UserService } from '../user/user.service';
-import { CryptoService } from 'src/auth/crypto.service';
+import { CryptoService } from '../auth/crypto.service';
 
 @Module({
   imports: [DatabaseModule, UserModule],
