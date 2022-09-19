@@ -25,16 +25,16 @@ export class UserService {
         return this.userRepository.findOne({ where: { email } })
     }
 
-    async update(user: User) {
-        const userEntity = await this.userRepository.findOne({ where: { email: user.email } })
+    async update({ email, firstName, lastName, imageUrl }) {
+        const userEntity = await this.userRepository.findOne({ where: { email: email } })
         if (!userEntity) {
-            throw new NotFoundException('user not found. email: ' + user.email)
+            throw new NotFoundException('user not found. email: ' + email)
         }
 
-        userEntity.email = user.email
-        userEntity.firstName = user.firstName
-        userEntity.lastName = user.lastName
-        userEntity.imageUrl = user.imageUrl
+        userEntity.email = email
+        userEntity.firstName = firstName
+        userEntity.lastName = lastName
+        userEntity.imageUrl = imageUrl
 
         return await this.userRepository.save(userEntity)
     }
