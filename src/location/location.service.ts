@@ -56,10 +56,10 @@ export class LocationService {
             throw new NotFoundException(`Location with id ${id} was not found.`)
         }
 
-        if(imageBase64){
+        if (imageBase64) {
             // todo: get url
         }
-        
+
         location.address = address
         location.lat = lat
         location.lng = lng
