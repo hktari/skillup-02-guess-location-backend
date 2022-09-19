@@ -75,10 +75,18 @@ describe('Location', () => {
         })
 
         it('should return 404 when location doesn\'t exist', (done) => {
+            const locationUpdate: UpdateLocationDto = {
+                address: 'Prešernova ulica, Slovenj Gradec',
+                lat: 22.23123,
+                lng: 12.23232,
+            }
+
+
             getAuthToken(app, existingUser).then(token => {
                 request(app.getHttpServer())
                     .put('/location/no-exist')
                     .auth(token, { type: 'bearer' })
+                    .send(locationUpdate)
                     .then(res => {
                         expect(res.statusCode).toBe(404)
                         done()

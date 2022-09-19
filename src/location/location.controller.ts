@@ -1,4 +1,4 @@
-import { Response, Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request, UseInterceptors, ClassSerializerInterceptor, UnauthorizedException } from '@nestjs/common';
+import { Response, Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request, UseInterceptors, ClassSerializerInterceptor, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserEntity } from '../user/entities/user.entity';
 import CreateLocationDto from './dto/CreateLocationDto';
@@ -43,6 +43,10 @@ export class LocationController {
   @UseGuards(AuthGuard('jwt'))
   async update(@Request() req, @Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
     const location = await this.locationService.findOne(id)
+    if (!location) {
+      throw new NotFoundException(`Location with id ${id} was not found`)
+    }
+
     if (location.user.id !== req.user.id) {
       throw new UnauthorizedException(`User ${req.user.email} can't update location ${location.id} added by ${location.user.email}`)
     }

@@ -47,7 +47,7 @@ export class LocationService {
     }
 
     findOne(id: string): Promise<LocationEntity> {
-        return this.locationRepository.findOneOrFail({ where: { id } })
+        return this.locationRepository.findOne({ where: { id } })
     }
 
     async update(id: string, { address, imageBase64, lat, lng }: UpdateLocationDto): Promise<LocationEntity> {
