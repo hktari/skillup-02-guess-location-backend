@@ -67,4 +67,13 @@ export class LocationService {
 
         return this.locationRepository.save(location)
     }
+
+    async delete(id: string) {
+        const location = await this.locationRepository.findOneBy({ id })
+        if (!location) {
+            throw new NotFoundException(`Location with id ${id} was not found.`)
+        }
+
+        await this.locationRepository.remove(location)
+    }
 }
