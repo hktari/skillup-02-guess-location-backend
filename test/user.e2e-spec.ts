@@ -81,4 +81,9 @@ describe('User', () => {
          })
 
     })
+
+    afterAll(async () => {
+        await app?.close();
+    })
+
 })
