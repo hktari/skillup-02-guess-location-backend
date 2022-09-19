@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Repository } from 'typeorm'
 import { UserEntity } from '../src/user/entities/user.entity'
 import { UserRepository } from '../src/common/constants';
+import { existingUser, existingUserPassword } from './data/seed/user.seeder';
 
 describe('Auth', () => {
   let app: INestApplication;
@@ -26,27 +27,13 @@ describe('Auth', () => {
     await app.init();
 
     userRepository = moduleRef.get<Repository<UserEntity>>(UserRepository)
-
-    await createTestData()
   });
-
-
-  let existingUser;
-  async function createTestData() {
-    existingUser = userRepository.create()
-    existingUser.email = 'test@example.com'
-    existingUser.firstName = 'scott'
-    existingUser.lastName = 'johnson'
-    existingUser.password = 'secret'
-    await userRepository.save(existingUser)
-  }
-
   describe('/POST auth/login', () => {
 
     it(`should return access_token when correct credentials`, (done) => {
       const loginDto = {
         email: existingUser.email,
-        password: existingUser.password
+        password: existingUserPassword
       }
 
 

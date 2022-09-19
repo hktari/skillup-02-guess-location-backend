@@ -9,11 +9,13 @@ export const existingUser: UserEntity = {
     firstName: 'Joža',
     lastName: 'Mošt',
     email: 'existing.user@example.com',
-    password: 'secret',
+    password: '$2b$10$/JZHs9gRLkTA3CGKDO9JMuiccixHKSTbLb9.OFBR2mwi6RqbN6XiO', // 'secret'
     imageUrl: 'http://example.com',
     locations: [],
     guesses: []
 }
+
+export const existingUserPassword = 'secret'
 
 export default class UserSeeder implements Seeder {
     public async run(
