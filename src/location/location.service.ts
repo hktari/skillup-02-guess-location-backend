@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { LocationRepository, UserRepository } from '../common/constants';
 import { Location } from './interfaces/Location.interface'
 import { FindOptionsUtils, Repository } from 'typeorm'
@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { LocationEntity } from './entities/location.entity';
 import { UserEntity } from '../user/entities/user.entity';
 import { PaginatedCollection } from '../common/interface/PaginatedCollection';
+import { UpdateLocationDto } from './dto/UpdateLocationDto';
 @Injectable()
 export class LocationService {
     constructor(
@@ -43,5 +44,27 @@ export class LocationService {
             totalItems,
             items
         }
+    }
+
+    findOne(id: string): Promise<LocationEntity> {
+        return this.locationRepository.findOneOrFail({ where: { id } })
+    }
+
+    async update(id: string, { address, imageBase64, lat, lng }: UpdateLocationDto): Promise<LocationEntity> {
+        const location = await this.locationRepository.findOneBy({ id })
+        if (!location) {
+            throw new NotFoundException(`Location with id ${id} was not found.`)
+        }
+
+        if(imageBase64){
+            // todo: get url
+        }
+        
+        location.address = address
+        location.lat = lat
+        location.lng = lng
+        location.imageUrl = 'TODO'
+
+        return this.locationRepository.save(location)
     }
 }

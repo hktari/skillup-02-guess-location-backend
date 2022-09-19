@@ -36,13 +36,13 @@ export class LocationController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `this retrieves the location: ${id}`
+    return this.locationService.findOne(id)
   }
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
-    return 'this updates the location: ' + id
+    return this.locationService.update(id, updateLocationDto)
   }
 
   @Delete(':id')

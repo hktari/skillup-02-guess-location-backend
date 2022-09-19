@@ -1,6 +1,16 @@
 import CreateLocationDto from "./CreateLocationDto";
-import { PartialType } from '@nestjs/mapped-types'
+import { IsString, IsNumber } from 'class-validator'
 
-export class UpdateLocationDto extends PartialType(CreateLocationDto) {
+export class UpdateLocationDto {
+    @IsString()
+    address: string
 
+    @IsNumber()
+    lat: number
+
+    @IsNumber()
+    lng: number
+
+    @IsString()
+    imageBase64?: string
 }
