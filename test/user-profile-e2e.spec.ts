@@ -107,6 +107,18 @@ describe('User profile', () => {
         })
     })
 
+    describe('PUT /user/my-profile/password', () => {
+        it('should return 401 when not authenticated', (done) => {
+            expect(true).toBe(false)
+            done()
+        })
+
+        it('should return 200 when authenticated', (done) => {
+            expect(true).toBe(false)
+            done()
+        })
+    })
+
     afterAll(async () => {
         await app?.close();
     })

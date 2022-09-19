@@ -130,7 +130,7 @@ describe('Location', () => {
         })
 
         it('should return 404 when location is non-existent', (done) => {
-            getAuthToken().then(token => {
+            getAuthToken(app, existingUser).then(token => {
                 request(app.getHttpServer())
                     .post('/location/guess/no-exist')
                     .auth(token, { type: 'bearer' })
@@ -148,7 +148,7 @@ describe('Location', () => {
                 lng: 11.232322
             }
 
-            getAuthToken().then(token => {
+            getAuthToken(app, existingUser).then(token => {
                 request(app.getHttpServer())
                     .post('/location/guess/' + existingLocation.id)
                     .auth(token, { type: 'bearer' })
