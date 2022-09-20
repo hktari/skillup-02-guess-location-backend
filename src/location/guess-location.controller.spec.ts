@@ -4,7 +4,7 @@ import { GuessLocationController } from './guess-location.controller';
 describe('GuessLocationController', () => {
   let controller: GuessLocationController;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GuessLocationController],
     }).compile();

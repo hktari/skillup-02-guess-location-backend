@@ -9,7 +9,7 @@ import { mocklocationProviders } from './providers/mock.location.providers';
 describe('LocationController', () => {
   let controller: LocationController;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LocationController],
       providers: [LocationService, ...mocklocationProviders, ...mockUserProviders],
