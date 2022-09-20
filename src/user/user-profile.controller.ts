@@ -15,7 +15,7 @@ export class UserController {
 
     @Get('my-profile')
     getMyProfile(@Request() req) {
-        return this.userService.getOne(req.email)
+        return this.userService.getByEmail(req.email)
     }
 
     @Put('my-profile')

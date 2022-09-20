@@ -44,7 +44,7 @@ describe('Location', () => {
     beforeEach(async () => {
         const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
-        existingUser = await userService.getOne('existing.user@example.com')
+        existingUser = await userService.getByEmail('existing.user@example.com')
     })
 
     // describe('GET /location', () => {

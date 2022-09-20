@@ -21,7 +21,7 @@ export class UserService {
         return this.userRepository.findAndCount()
     }
 
-    getOne(email: string) {
+    getByEmail(email: string) {
         return this.userRepository.findOneBy({ email })
     }
 

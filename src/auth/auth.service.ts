@@ -12,11 +12,11 @@ export class AuthService {
     }
 
     async validateUser(email: string): Promise<UserEntity> {
-        return await this.usersService.getOne(email)
+        return await this.usersService.getByEmail(email)
     }
 
     async login(email: string, password: string) {
-        const user = await this.usersService.getOne(email);
+        const user = await this.usersService.getByEmail(email);
 
         if (user && await this.cryptoService.validatePassword(password, user.password)) {
             const payload = { email, sub: user.id };
@@ -29,7 +29,7 @@ export class AuthService {
     }
 
     async signup(signupDto: SignupDto) {
-        const existingUser = await this.usersService.getOne(signupDto.email)
+        const existingUser = await this.usersService.getByEmail(signupDto.email)
 
         if (existingUser) {
             throw new BadRequestException('User with that email already exists.')

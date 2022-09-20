@@ -48,7 +48,7 @@ describe('UserService', () => {
 
     describe('getOne', () => {
         it('should return a UserEntity object when exists', (done) => {
-            userService.getOne(existingUser.email).then(res => {
+            userService.getByEmail(existingUser.email).then(res => {
                 expect(res).toBe(existingUser)
                 done()
             }).catch(err => done(err))
