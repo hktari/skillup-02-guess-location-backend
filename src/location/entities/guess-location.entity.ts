@@ -1,5 +1,5 @@
 import { UserEntity } from '../../user/entities/user.entity'
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm'
 import { LocationEntity } from './location.entity'
 
 
@@ -9,9 +9,11 @@ export class GuessLocationEntity {
     id: string
 
     @ManyToOne(() => UserEntity, (user) => user.locations)
+    @JoinColumn()
     user: UserEntity
 
     @ManyToOne(() => LocationEntity, (location) => location.guesses)
+    @JoinColumn()
     location: LocationEntity
 
     @Column({
