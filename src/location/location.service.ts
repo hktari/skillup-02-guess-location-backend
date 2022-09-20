@@ -72,7 +72,6 @@ export class LocationService {
         location.address = address
         location.lat = lat
         location.lng = lng
-        location.imageUrl = 'TODO'
 
         return this.locationRepository.save(location)
     }

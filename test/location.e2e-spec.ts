@@ -1,23 +1,16 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication, Inject, Put } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { AuthModule } from '../src/auth/auth.module';
 import { DatabaseModule } from '../src/database/database.module';
 import { ConfigModule } from '@nestjs/config';
-import { Repository } from 'typeorm'
 import { UserEntity } from '../src/user/entities/user.entity'
-import { LocationEntity } from '../src/location/entities/location.entity';
-import CreateLocationDto from '../src/location/dto/CreateLocationDto';
-import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
 import { existingLocation } from './data/seed/location.seeder';
-import { GuessLocationEntity } from '../src/location/entities/guess-location.entity';
-import { getAuthToken } from './common.e2e';
 import { LocationModule } from '../src/location/location.module';
 import { UpdateLocationDto } from '../src/location/dto/UpdateLocationDto';
 import { AuthService } from '../src/auth/auth.service';
-import { UserRepository } from '../src/common/constants';
 import { UserModule } from '../src/user/user.module';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../src/user/user.service';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -139,7 +132,8 @@ describe('Location', () => {
                 ...location,
                 address: locationUpdate.address,
                 lat: locationUpdate.lat,
-                lng: locationUpdate.lng
+                lng: locationUpdate.lng,
+                createDate: location.createdDate.toISOString()
             }
 
             request(app.getHttpServer())
