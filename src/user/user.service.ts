@@ -22,7 +22,7 @@ export class UserService {
     }
 
     getOne(email: string) {
-        return this.userRepository.findOne({ where: { email } })
+        return this.userRepository.findOneBy({ email })
     }
 
     async update({ email, firstName, lastName, imageUrl }) {
