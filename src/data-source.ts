@@ -20,6 +20,7 @@ const options: DataSourceOptions & SeederOptions = {
     factories: ['test/data/factory/**/*.ts'],
     seeds: ['test/data/seed/**/*.ts'],
     migrations: ['db/migrations/**/*.ts'],
+    uuidExtension: 'pgcrypto'
 };
 
 export const AppDataSource = new DataSource(options)
