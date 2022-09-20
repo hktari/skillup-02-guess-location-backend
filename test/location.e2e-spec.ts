@@ -22,7 +22,8 @@ describe('Location', () => {
     let locationService: LocationService
     let accessToken: string
     let existingUser: UserEntity
-    let existingLocation : LocationEntity
+    let anotherUser: UserEntity
+    let existingLocation: LocationEntity
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -44,6 +45,7 @@ describe('Location', () => {
         const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
         existingUser = await userService.getByEmail('existing.user@example.com')
+        anotherUser = await userService.getByEmail('another.user@example.com')
         existingLocation = existingUser.locations[0]
     })
 
@@ -115,9 +117,10 @@ describe('Location', () => {
                 lat: 22.23123,
                 lng: 12.23232,
             }
+            const forbiddenLocation = anotherUser.locations[0]
 
             request(app.getHttpServer())
-                .put('/location/' + existingLocation.id)
+                .put('/location/' + forbiddenLocation.id)
                 .auth(accessToken, { type: 'bearer' })
                 .send(locationUpdate)
                 .then(res => {
@@ -240,7 +243,7 @@ describe('Location', () => {
         })
 
         it('should return 200 and guess result object when location exists', (done) => {
-            const guessLocation : GuessLocationDto={
+            const guessLocation: GuessLocationDto = {
                 address: 'Titova ulica, Maribor',
                 lat: 22.22323,
                 lng: 11.12322
@@ -251,7 +254,7 @@ describe('Location', () => {
                 .auth(accessToken, { type: 'bearer' })
                 .send(guessLocation)
                 .then(res => {
-                    expect(res.statusCode).toBe(200)
+                    expect(res.statusCode).toBe(201)
                     expectGuessLocationEntity(res.body)
                     done()
                 }).catch(err => done(err))

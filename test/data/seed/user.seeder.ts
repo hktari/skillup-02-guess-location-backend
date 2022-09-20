@@ -32,25 +32,21 @@ export default class UserSeeder implements Seeder {
         ]);
 
 
-        // create location entries
-        const locationFactory = await factoryManager.get(LocationEntity)
-        await locationFactory.saveMany(5, { user: existingUser })
 
-        // create location entries with guess entries
-        const guessFactory = await factoryManager.get(GuessLocationEntity)
-        for (const location of await locationFactory.saveMany(5, { user: existingUser })) {
-            await guessFactory.save({ user: existingUser, location: location })
+        const userFactory = await factoryManager.get(UserEntity)
+        const anotherUser = await userFactory.save({ email: 'another.user@example.com' })
+
+
+        for (const user of [existingUser, anotherUser]) {
+            // create location entries
+            const locationFactory = await factoryManager.get(LocationEntity)
+            await locationFactory.saveMany(5, { user: user })
+
+            // create location entries with guess entries
+            const guessFactory = await factoryManager.get(GuessLocationEntity)
+            for (const location of await locationFactory.saveMany(5, { user: user })) {
+                await guessFactory.save({ user: existingUser, location: location })
+            }
         }
-
-
-
-        // ---------------------------------------------------
-
-        const userFactory = await factoryManager.get(UserEntity);
-        // save 1 factory generated entity, to the database
-        await userFactory.save();
-
-        // save 5 factory generated entities, to the database
-        await userFactory.saveMany(5);
     }
 }
