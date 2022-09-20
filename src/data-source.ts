@@ -17,9 +17,9 @@ const options: DataSourceOptions & SeederOptions = {
         LocationEntity,
         GuessLocationEntity
     ],
-    factories: ['/../test/data/factory/**/*.ts'],
-    seeds: ['/../test/data/seed/**/*.ts'],
-    migrations: ['/migrations/**/*.ts'],
+    factories: ['test/data/factory/**/*.ts'],
+    seeds: ['test/data/seed/**/*.ts'],
+    migrations: ['db/migrations/**/*.ts'],
 };
 
 export const AppDataSource = new DataSource(options)

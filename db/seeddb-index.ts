@@ -8,8 +8,6 @@ import { AppDataSource } from '../src/data-source'
     try {
         console.log('start seeding...')
         const dataSourceInit = await AppDataSource.initialize();
-
-        await dataSourceInit.synchronize(false)
         await runSeeders(dataSourceInit);
         console.log('finished seeding...')
     } catch (error) {

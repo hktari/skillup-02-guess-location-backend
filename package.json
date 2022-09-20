@@ -14,17 +14,13 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "pretest:e2e": "npm run db:create && npm run db:seed",
-    "test:e2e": "env-cmd -f ./test.env jest --config ./test/jest-e2e.json",
-    "posttest:e2e": "npm run db:drop",
-    "db:create": "sudo -u postgres createdb geotagger_test && sudo -u postgres psql -d geotagger_test -f ./db/install-extension.sql",
-    "db:drop": "sudo -u postgres dropdb geotagger_test",
+    "typeorm": "env-cmd -f ./.env typeorm-ts-node-esm -d src/data-source.ts",
+    "test:typeorm": "env-cmd -f ./test.env typeorm-ts-node-esm -d src/data-source.ts",
     "db:seed": "env-cmd -f ./test.env ts-node ./db/seeddb-index.ts",
-    "typeorm": "env-cmd -f ./.env typeorm-ts-node-esm -d src/data-source.ts"
+    "test": "jest",
+    "pretest:e2e": "npm run test:typeorm schema:sync && npm run db:seed",
+    "test:e2e": "env-cmd -f ./test.env jest --config ./test/jest-e2e.json",
+    "posttest:e2e": "npm run test:typeorm schema:drop"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
