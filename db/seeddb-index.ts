@@ -2,12 +2,12 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { runSeeders, SeederOptions } from 'typeorm-extension';
 
 import { UserEntity } from '../src/user/entities/user.entity';
-import dataSource from './data-source'
+import { AppDataSource } from '../src/data-source'
 
 (async () => {
     try {
         console.log('start seeding...')
-        const dataSourceInit = await dataSource.initialize();
+        const dataSourceInit = await AppDataSource.initialize();
 
         await dataSourceInit.synchronize(false)
         await runSeeders(dataSourceInit);

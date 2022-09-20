@@ -23,7 +23,8 @@
     "posttest:e2e": "npm run db:drop",
     "db:create": "sudo -u postgres createdb geotagger_test && sudo -u postgres psql -d geotagger_test -f ./db/install-extension.sql",
     "db:drop": "sudo -u postgres dropdb geotagger_test",
-    "db:seed": "env-cmd -f ./test.env ts-node ./db/seeddb-index.ts"
+    "db:seed": "env-cmd -f ./test.env ts-node ./db/seeddb-index.ts",
+    "typeorm": "env-cmd -f ./env typeorm-ts-node-esm"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
