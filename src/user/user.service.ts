@@ -42,7 +42,7 @@ export class UserService {
     }
 
     async update({ email, firstName, lastName, imageUrl }) {
-        const userEntity = await this.userRepository.findOne({ where: { email: email } })
+        const userEntity = await this.getByEmail(email)
         if (!userEntity) {
             throw new NotFoundException('user not found. email: ' + email)
         }
@@ -56,7 +56,7 @@ export class UserService {
     }
 
     async setPassword(email: string, password: string) {
-        const userEntity = await this.userRepository.findOne({ where: { email } })
+        const userEntity = await this.getByEmail(email)
 
         if (!userEntity) {
             throw new NotFoundException(`User with email ${email} not found`)
