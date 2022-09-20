@@ -11,6 +11,7 @@ import { UpdateLocationDto } from '../src/location/dto/UpdateLocationDto';
 import { AuthService } from '../src/auth/auth.service';
 import { UserModule } from '../src/user/user.module';
 import { UserService } from '../src/user/user.service';
+import { LocationEntity } from '../src/location/entities/location.entity';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -133,7 +134,7 @@ describe('Location', () => {
                 address: locationUpdate.address,
                 lat: locationUpdate.lat,
                 lng: locationUpdate.lng,
-                createDate: location.createdDate.toISOString()
+                createdDate: location.createdDate.toISOString()
             }
 
             request(app.getHttpServer())
@@ -149,34 +150,45 @@ describe('Location', () => {
         })
     })
 
+    function expectLocationEntity(location: any){
+        expect(location).toHaveProperty('id')
+        expect(location).toHaveProperty('address')
+        expect(location).toHaveProperty('lat')
+        expect(location).toHaveProperty('lng')
+        expect(location).toHaveProperty('imageUrl')
+        expect(location).toHaveProperty('createdDate')
+        expect(location).toHaveProperty('user')
+        expect(location).toHaveProperty('guessess')
+    }
 
-    // describe('GET /location/random', () => {
-    //     it('should return 200 and a location object', (done) => {
-    //         request(app.getHttpServer())
-    //             .get('/location/random')
-    //             .then(res => {
-    //                 expect(res.statusCode).toBe(200)
-    //                 expect(res.body).toMatchObject(new LocationEntity())
-    //                 done()
-    //             })
-    //     })
+    describe('GET /location/random', () => {
+        it('should return 200 and a location object', (done) => {
+            request(app.getHttpServer())
+                .get('/location/random')
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expectLocationEntity(res.body)
+                    done()
+                }).catch(err => done(err))
 
-    //     it('should return at least 3 different object out of 10 request', (done) => {
-    //         const requestsList: Promise<LocationEntity>[] = []
-    //         for (let i = 0; i < 10; i++) {
-    //             requestsList.push(
-    //                 request(app.getHttpServer())
-    //                     .get('/location/random')
-    //                     .then(res => res.body as LocationEntity))
-    //         }
+        })
 
-    //         Promise.all(requestsList).then(res => {
-    //             const uniqueLocations = new Set(res.map(location => location.id))
-    //             expect(uniqueLocations.size).toBeGreaterThanOrEqual(3)
-    //             done()
-    //         }, err => done(err))
-    //     })
-    // })
+        it('should return at least 3 different object out of 10 request', (done) => {
+            const requestsList: Promise<LocationEntity>[] = []
+            for (let i = 0; i < 10; i++) {
+                requestsList.push(
+                    request(app.getHttpServer())
+                        .get('/location/random')
+                        .then(res => res.body as LocationEntity))
+            }
+
+            Promise.all(requestsList).then(res => {
+                const uniqueLocations = new Set(res.map(location => location.id))
+                expect(uniqueLocations.size).toBeGreaterThanOrEqual(3)
+                done()
+            }, err => done(err)).catch(err => done(err))
+        })
+    })
 
     // describe('POST /location', () => {
     //     it('should return 401 when invalid authentication header', (done) => {

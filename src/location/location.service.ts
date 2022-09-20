@@ -84,4 +84,22 @@ export class LocationService {
 
         await this.locationRepository.remove(location)
     }
+
+    async getRandom() {
+        const locationCount = await this.locationRepository.count()
+        if (locationCount === 0) {
+            return null
+        }
+
+        const randomIdx = Math.floor(Math.random() * locationCount)
+        const itemsList = await this.locationRepository.find({
+            skip: randomIdx,
+            relations: {
+                user: true,
+                guesses: true
+            }
+        })
+
+        return itemsList[0]
+    }
 }

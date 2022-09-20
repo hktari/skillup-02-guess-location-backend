@@ -34,6 +34,12 @@ export class LocationController {
     return this.locationService.findAll(startIdx, pageSize)
   }
 
+
+  @Get('/random')
+  async getRandom(){
+    return this.locationService.getRandom()    
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.locationService.findOne(id)
@@ -67,6 +73,4 @@ export class LocationController {
 
     return res.sendStatus(200)
   }
-
-
 }
