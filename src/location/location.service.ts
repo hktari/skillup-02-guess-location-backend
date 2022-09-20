@@ -109,10 +109,11 @@ export class LocationService {
 
     async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto) {
         const location = await this.findOne(locationId)
-        const user: UserEntity = location.user
         if (!location) {
             throw new NotFoundException(`Location with id ${locationId} was not found.`)
         }
+
+        const user: UserEntity = location.user
         if (!user) {
             throw new BadRequestException(`The location with id ${locationId} has no user`)
         }

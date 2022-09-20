@@ -5,21 +5,24 @@ import { AuthModule } from '../src/auth/auth.module';
 import { DatabaseModule } from '../src/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserEntity } from '../src/user/entities/user.entity'
-import { existingLocation } from './data/seed/location.seeder';
 import { LocationModule } from '../src/location/location.module';
 import { UpdateLocationDto } from '../src/location/dto/UpdateLocationDto';
 import { AuthService } from '../src/auth/auth.service';
 import { UserModule } from '../src/user/user.module';
 import { UserService } from '../src/user/user.service';
 import { LocationEntity } from '../src/location/entities/location.entity';
-import CreateLocationDto from 'src/location/dto/CreateLocationDto';
+import CreateLocationDto from '../src/location/dto/CreateLocationDto';
+import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
+import { LocationService } from '../src/location/location.service';
 
 describe('Location', () => {
     let app: INestApplication;
     let userService: UserService
     let authService: AuthService
+    let locationService: LocationService
     let accessToken: string
     let existingUser: UserEntity
+    let existingLocation : LocationEntity
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -34,12 +37,14 @@ describe('Location', () => {
 
         authService = moduleRef.get<AuthService>(AuthService)
         userService = moduleRef.get<UserService>(UserService)
+        locationService = moduleRef.get<LocationService>(LocationService)
     });
 
     beforeEach(async () => {
         const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
         existingUser = await userService.getByEmail('existing.user@example.com')
+        existingLocation = existingUser.locations[0]
     })
 
     // describe('GET /location', () => {
@@ -151,16 +156,6 @@ describe('Location', () => {
         })
     })
 
-    function expectLocationEntity(location: any) {
-        expect(location).toHaveProperty('id')
-        expect(location).toHaveProperty('address')
-        expect(location).toHaveProperty('lat')
-        expect(location).toHaveProperty('lng')
-        expect(location).toHaveProperty('imageUrl')
-        expect(location).toHaveProperty('createdDate')
-        expect(location).toHaveProperty('user')
-        expect(location).toHaveProperty('guesses')
-    }
 
     describe('GET /location/random', () => {
         it('should return 200 and a location object', (done) => {
@@ -223,49 +218,70 @@ describe('Location', () => {
     })
 
 
-    // describe('POST /location/guess/:id', () => {
-    //     it('should return 401 when not authenticated', (done) => {
-    //         request(app.getHttpServer())
-    //             .post('/location/guess/1')
-    //             .then(res => {
-    //                 expect(res.statusCode).toBe(401)
-    //                 done()
-    //             })
-    //     })
+    describe('POST /location/guess/:id', () => {
+        it('should return 401 when not authenticated', (done) => {
+            request(app.getHttpServer())
+                .post('/location/guess/1')
+                .then(res => {
+                    expect(res.statusCode).toBe(401)
+                    done()
+                })
+                .catch(err => done(err))
+        })
 
-    //     it('should return 404 when location is non-existent', (done) => {
-    //         getAuthToken(app, existingUser).then(token => {
-    //             request(app.getHttpServer())
-    //                 .post('/location/guess/no-exist')
-    //                 .auth(token, { type: 'bearer' })
-    //                 .then(res => {
-    //                     expect(res.statusCode).toBe(404)
-    //                     done()
-    //                 })
-    //         })
-    //     })
+        it('should return 404 when location is non-existent', (done) => {
+            request(app.getHttpServer())
+                .post('/location/guess/4c9a3d28-d71b-48f1-b262-cca0de8cf5a7')
+                .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.statusCode).toBe(404)
+                    done()
+                }).catch(err => done(err))
+        })
 
-    //     it('should return 200 and guess result object when location exists', (done) => {
-    //         const guessLocationDto: GuessLocationDto = {
-    //             address: 'Titova ulica 22',
-    //             lat: 22.232322,
-    //             lng: 11.232322
-    //         }
+        it('should return 200 and guess result object when location exists', (done) => {
+            const guessLocation : GuessLocationDto={
+                address: 'Titova ulica, Maribor',
+                lat: 22.22323,
+                lng: 11.12322
+            }
 
-    //         getAuthToken(app, existingUser).then(token => {
-    //             request(app.getHttpServer())
-    //                 .post('/location/guess/' + existingLocation.id)
-    //                 .auth(token, { type: 'bearer' })
-    //                 .then(res => {
-    //                     expect(res.statusCode).toBe(200)
-    //                     expect(res.body).toMatchObject(new GuessLocationEntity())
-    //                     done()
-    //                 })
-    //         })
-    //     })
-    // })
+            request(app.getHttpServer())
+                .post('/location/guess/' + existingLocation.id)
+                .auth(accessToken, { type: 'bearer' })
+                .send(guessLocation)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expectGuessLocationEntity(res.body)
+                    done()
+                }).catch(err => done(err))
+        })
+    })
 
     afterAll(async () => {
         await app?.close();
     })
 });
+
+
+/* ------------------------------- // utility ------------------------------- */
+
+function expectLocationEntity(location: any) {
+    expect(location).toHaveProperty('id')
+    expect(location).toHaveProperty('address')
+    expect(location).toHaveProperty('lat')
+    expect(location).toHaveProperty('lng')
+    expect(location).toHaveProperty('imageUrl')
+    expect(location).toHaveProperty('createdDate')
+    expect(location).toHaveProperty('user')
+    expect(location).toHaveProperty('guesses')
+}
+function expectGuessLocationEntity(guessLocation: any) {
+    expect(guessLocation).toHaveProperty('id')
+    expect(guessLocation).toHaveProperty('user')
+    expect(guessLocation).toHaveProperty('location')
+    expect(guessLocation).toHaveProperty('lat')
+    expect(guessLocation).toHaveProperty('lng')
+    expect(guessLocation).toHaveProperty('address')
+    expect(guessLocation).toHaveProperty('errorInMeters')
+}
