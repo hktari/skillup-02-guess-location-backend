@@ -18,7 +18,7 @@ export class UserController {
 
   @Get(':id')
   getSingle(@Param('id') id: string) {
-    return this.userService.getByEmail(id)
+    return this.userService.getOne(id)
   }
 
 }

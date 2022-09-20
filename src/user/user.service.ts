@@ -21,8 +21,24 @@ export class UserService {
         return this.userRepository.findAndCount()
     }
 
+    getOne(id: string) {
+        return this.userRepository.findOne({
+            where: { id },
+            relations: {
+                locations: true,
+                guesses: true
+            },
+        })
+    }
+
     getByEmail(email: string) {
-        return this.userRepository.findOneBy({ email })
+        return this.userRepository.findOne({
+            where: { email },
+            relations: {
+                locations: true,
+                guesses: true
+            },
+        })
     }
 
     async update({ email, firstName, lastName, imageUrl }) {
