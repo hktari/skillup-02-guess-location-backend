@@ -12,6 +12,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { AppLogger } from './common/services/app-logger.service';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
+    AppLogger
   ]
 })
 export class AppModule implements NestModule {
