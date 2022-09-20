@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication, Put } from '@nestjs/common';
+import { INestApplication, Inject, Put } from '@nestjs/common';
 import { AuthModule } from '../src/auth/auth.module';
 import { DatabaseModule } from '../src/database/database.module';
 import { ConfigModule } from '@nestjs/config';
@@ -12,20 +12,23 @@ import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
 import { existingLocation } from './data/seed/location.seeder';
 import { GuessLocationEntity } from '../src/location/entities/guess-location.entity';
 import { getAuthToken } from './common.e2e';
-import { existingUser, existingUserPassword } from './data/seed/user.seeder';
 import { LocationModule } from '../src/location/location.module';
 import { UpdateLocationDto } from '../src/location/dto/UpdateLocationDto';
 import { AuthService } from '../src/auth/auth.service';
+import { UserRepository } from '../src/common/constants';
+import { UserModule } from '../src/user/user.module';
+import { UserService } from 'src/user/user.service';
 
 describe('Location', () => {
     let app: INestApplication;
-    let userRepository: Repository<UserEntity>;
+    let userService: UserService
     let authService: AuthService
     let accessToken: string
+    let existingUser: UserEntity
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            imports: [AuthModule, LocationModule, DatabaseModule, UserModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
         })
             // .overrideProvider(AuthService)
             // .useValue(authService)
@@ -35,11 +38,13 @@ describe('Location', () => {
         await app.init();
 
         authService = moduleRef.get<AuthService>(AuthService)
+        userService = moduleRef.get<UserService>(UserService)
     });
 
     beforeEach(async () => {
-        const loginResponse = await authService.login(existingUser.email, existingUserPassword)
+        const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
+        existingUser = await userService.getOne('existing.user@example.com')
     })
 
     // describe('GET /location', () => {
@@ -124,32 +129,29 @@ describe('Location', () => {
         })
 
         it('should return 200 and updated location object', (done) => {
-            userRepository.findOneBy({ id: existingUser.id }).then(user => {
-                const location = user.locations[0]
-                const locationUpdate: UpdateLocationDto = {
-                    address: 'Prešernova ulica, Slovenj Gradec',
-                    lat: 22.23123,
-                    lng: 12.23232,
-                }
-                const result = {
-                    ...location,
-                    address: locationUpdate.address,
-                    lat: locationUpdate.lat,
-                    lng: locationUpdate.lng
-                }
+            const location = existingUser.locations[0]
+            const locationUpdate: UpdateLocationDto = {
+                address: 'Prešernova ulica, Slovenj Gradec',
+                lat: 22.23123,
+                lng: 12.23232,
+            }
+            const result = {
+                ...location,
+                address: locationUpdate.address,
+                lat: locationUpdate.lat,
+                lng: locationUpdate.lng
+            }
 
-                request(app.getHttpServer())
-                    .put('/location/' + location.id)
-                    .set('Authorization', `Bearer ${accessToken}`)
-                    .send(locationUpdate)
-                    .then(res => {
-                        expect(res.statusCode).toBe(200)
-                        expect(res.body).toMatchObject(result)
-                        done()
-                    })
-                    .catch(err => done(err))
-
-            })
+            request(app.getHttpServer())
+                .put('/location/' + location.id)
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send(locationUpdate)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toMatchObject(result)
+                    done()
+                })
+                .catch(err => done(err))
         })
     })
 
