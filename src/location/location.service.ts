@@ -36,6 +36,9 @@ export class LocationService {
             order: {
                 createdDate: "DESC",
             },
+            relations: {
+                user: true
+            }
         })
 
         return {
@@ -47,7 +50,13 @@ export class LocationService {
     }
 
     findOne(id: string): Promise<LocationEntity> {
-        return this.locationRepository.findOne({ where: { id } })
+        return this.locationRepository.findOne({
+            where: { id },
+            relations: {
+                user: true,
+                guesses: true
+            },
+        })
     }
 
     async update(id: string, { address, imageBase64, lat, lng }: UpdateLocationDto): Promise<LocationEntity> {
