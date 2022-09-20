@@ -7,13 +7,12 @@ import { GuessLocationEntity } from './location/entities/guess-location.entity'
 
 const options: DataSourceOptions & SeederOptions = {
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'hktari',
-    password: '123qweAsd.',
-    database: 'geotagger',
+    host: process.env.PGHOST,
+    port: +process.env.PGPORT || 5432,
+    username: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    database: process.env.PGDATABASE,
     entities: [
-        // './**/*.entity.ts',
         UserEntity,
         LocationEntity,
         GuessLocationEntity
@@ -21,21 +20,6 @@ const options: DataSourceOptions & SeederOptions = {
     factories: ['/../test/data/factory/**/*.ts'],
     seeds: ['/../test/data/seed/**/*.ts'],
     migrations: ['/migrations/**/*.ts'],
-    synchronize: true
 };
 
 export const AppDataSource = new DataSource(options)
-
-
-// host: process.env.PGHOST,
-// port: +process.env.PGPORT,
-// username: process.env.PGUSER,
-// password: process.env.PGPASSWORD,
-// database: process.env.PGDATABASE,
-// entities: [
-//     __dirname + './**/*.entity.ts',
-// ],
-// factories: [__dirname + '/../test/data/factory/**/*.ts'],
-// seeds: [__dirname + '/../test/data/seed/**/*.ts'],
-// migrations: [__dirname + '/migrations/**/*.ts'],
-// synchronize: true
