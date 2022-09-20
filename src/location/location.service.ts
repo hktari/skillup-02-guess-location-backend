@@ -107,7 +107,7 @@ export class LocationService {
         return itemsList[0]
     }
 
-    async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto) {
+    async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto) : Promise<GuessLocationEntity>{
         const location = await this.findOne(locationId)
         if (!location) {
             throw new NotFoundException(`Location with id ${locationId} was not found.`)
@@ -121,16 +121,20 @@ export class LocationService {
         // todo: calculate error
         const errorInMeters: number = 0
 
-        const locationGuess = this.guessLocationRepository.create({
+        let locationGuess = this.guessLocationRepository.create({
             address,
             lat,
             lng,
             errorInMeters,
-            user
+            user,
+            location
         })
 
-        location.guesses.push(locationGuess)
+        locationGuess = await this.guessLocationRepository.save(locationGuess)
 
-        return this.locationRepository.save(location)
+        location.guesses.push(locationGuess)
+        await this.locationRepository.save(location)
+        
+        return locationGuess;
     }
 }
