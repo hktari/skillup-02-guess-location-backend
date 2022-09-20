@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { LocationRepository, UserRepository } from '../common/constants';
+import { GuessLocationRepository, LocationRepository, UserRepository } from '../common/constants';
 import { Location } from './interfaces/Location.interface'
 import { FindOptionsUtils, Repository } from 'typeorm'
 import { UserService } from '../user/user.service';
@@ -7,10 +7,13 @@ import { LocationEntity } from './entities/location.entity';
 import { UserEntity } from '../user/entities/user.entity';
 import { PaginatedCollection } from '../common/interface/PaginatedCollection';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
+import { GuessLocationEntity } from './entities/guess-location.entity';
+import { GuessLocationDto } from './dto/GuessLocationDto';
 @Injectable()
 export class LocationService {
     constructor(
-        @Inject(LocationRepository) private locationRepository: Repository<LocationEntity>) {
+        @Inject(LocationRepository) private locationRepository: Repository<LocationEntity>,
+        @Inject(GuessLocationRepository) private guessLocationRepository: Repository<GuessLocationEntity>) {
 
     }
 
@@ -25,6 +28,7 @@ export class LocationService {
         locationEntity.lat = location.lat
         locationEntity.lng = location.lng
         locationEntity.user = user
+        locationEntity.guesses = []
 
         return await this.locationRepository.save(locationEntity)
     }
@@ -101,5 +105,31 @@ export class LocationService {
         })
 
         return itemsList[0]
+    }
+
+    async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto) {
+        const location = await this.findOne(locationId)
+        const user: UserEntity = location.user
+        if (!location) {
+            throw new NotFoundException(`Location with id ${locationId} was not found.`)
+        }
+        if (!user) {
+            throw new BadRequestException(`The location with id ${locationId} has no user`)
+        }
+
+        // todo: calculate error
+        const errorInMeters: number = 0
+
+        const locationGuess = this.guessLocationRepository.create({
+            address,
+            lat,
+            lng,
+            errorInMeters,
+            user
+        })
+
+        location.guesses.push(locationGuess)
+
+        return this.locationRepository.save(location)
     }
 }

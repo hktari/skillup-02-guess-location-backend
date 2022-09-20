@@ -11,7 +11,10 @@ export class LocationEntity {
     @JoinColumn()
     user: UserEntity
 
-    @OneToMany(() => GuessLocationEntity, (guessLocation) => guessLocation.location)
+    @OneToMany(() => GuessLocationEntity, (guessLocation) => guessLocation.location,
+        {
+            cascade: true,
+        })
     guesses: GuessLocationEntity[]
 
     @Column()
