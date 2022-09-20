@@ -1,9 +1,9 @@
 import "reflect-metadata"
 import { DataSource, DataSourceOptions } from "typeorm"
 import { SeederOptions } from "typeorm-extension";
-
-
-console.log("ENTITIES PATH:", __dirname + './**/*.entity.ts')
+import { UserEntity } from './user/entities/user.entity'
+import { LocationEntity } from './location/entities/location.entity'
+import { GuessLocationEntity } from './location/entities/guess-location.entity'
 
 const options: DataSourceOptions & SeederOptions = {
     type: 'postgres',
@@ -13,7 +13,10 @@ const options: DataSourceOptions & SeederOptions = {
     password: '123qweAsd.',
     database: 'geotagger',
     entities: [
-        './**/*.entity.ts',
+        // './**/*.entity.ts',
+        UserEntity,
+        LocationEntity,
+        GuessLocationEntity
     ],
     factories: ['/../test/data/factory/**/*.ts'],
     seeds: ['/../test/data/seed/**/*.ts'],
