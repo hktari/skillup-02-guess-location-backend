@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt'
 import { SignupDto } from './dto/signup.dto';
 import { CryptoService } from './crypto.service';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -10,8 +11,8 @@ export class AuthService {
 
     }
 
-    async validateUser(email: string, pass: string): Promise<any> {
-        return null;
+    async validateUser(email: string): Promise<UserEntity> {
+        return await this.usersService.getOne(email)
     }
 
     async login(email: string, password: string) {
