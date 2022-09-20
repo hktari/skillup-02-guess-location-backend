@@ -5,7 +5,7 @@ import { LocationEntity } from '../../../src/location/entities/location.entity';
 import { GuessLocationEntity } from '../../../src/location/entities/guess-location.entity';
 
 export const existingUser: UserEntity = {
-    id: '50e48a6f90bb4e79908418ccd7ce5735',
+    id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
     firstName: 'Joža',
     lastName: 'Mošt',
     email: 'existing.user@example.com',

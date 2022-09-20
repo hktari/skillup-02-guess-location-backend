@@ -4,7 +4,7 @@ import { LocationEntity } from '../../../src/location/entities/location.entity';
 import { UserEntity } from '../../../src/user/entities/user.entity';
 
 export const existingLocation: LocationEntity = {
-    id: "fe2f92aa-ad96-4b0e-a71d-32457b8ee1b2",
+    id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     address: 'Mariborska ulica 23',
     lat: 22.123122,
     lng: 11.022322,
@@ -12,7 +12,7 @@ export const existingLocation: LocationEntity = {
     createdDate: new Date(),
     guesses: [],
     user: {
-        id: 'de5a1ff2-d494-45f1-994c-c322658ea920',
+        id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12',
         email: 'existing.location.user@example.com',
         firstName: 'location',
         lastName: 'has',
