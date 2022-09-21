@@ -126,7 +126,7 @@ describe('User', () => {
 
 
 
-                    expect({ ...userObj, locations: [], guesses: [] }).toContainEqual({ ...existingUser, locations: [], guesses: [] })
+                    expect({ ...userObj, locations: [], guesses: [] }).toEqual({ ...existingUser, locations: [], guesses: [] })
                     expect(userObj.locations).toMatchObject(existingUser.locations)
                     expect(userObj.guesses).toMatchObject(existingUser.guesses)
 
@@ -164,7 +164,7 @@ describe('User', () => {
                 .auth(accessToken, { type: 'bearer' })
                 .expect(200)
                 .then(res => {
-                    expect(res.body).toContainEqual(result)
+                    expect(res.body).toEqual(result)
                     done()
                 }).catch(err => done(err))
         })
