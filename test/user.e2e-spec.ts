@@ -9,6 +9,9 @@ import { LocationEntity } from '../src/location/entities/location.entity';
 import { UserService } from '../src/user/user.service';
 import { LocationService } from '../src/location/location.service';
 import { expectGuessLocationEntity, expectLocationEntity } from './common.e2e';
+import { UserModule } from '../src/user/user.module';
+import { LocationModule } from '../src/location/location.module';
+import { AuthModule } from '../src/auth/auth.module';
 
 describe('User', () => {
     let app: INestApplication;
@@ -23,7 +26,7 @@ describe('User', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            imports: [UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
         })
             .compile();
 

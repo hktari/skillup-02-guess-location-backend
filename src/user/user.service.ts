@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { User } from './user.interface';
 import { CryptoService } from '../../src/auth/crypto.service';
+import { PaginatedCollection } from 'src/common/interface/PaginatedCollection';
 
 @Injectable()
 export class UserService {
@@ -17,8 +18,18 @@ export class UserService {
         return this.userRepository.save(userEntity)
     }
 
-    getAll() {
-        return this.userRepository.findAndCount()
+    async getAll(startIdx: number, pageSize: number): Promise<PaginatedCollection<UserEntity>> {
+        const [items, totalItems] = await this.userRepository.findAndCount({
+            skip: startIdx,
+            take: pageSize
+        })
+
+        return {
+            startIdx,
+            pageSize,
+            totalItems,
+            items
+        }
     }
 
     getOne(id: string) {
