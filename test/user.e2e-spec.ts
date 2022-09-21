@@ -69,7 +69,7 @@ describe('User', () => {
                     expect(res.body).toHaveProperty('locations')
                     expect(res.body.locations).toHaveLength(10)
                     for (const location of res.body.locations) {
-                        expectLocationEntity(location)
+                        expectLocationEntity(location, false)
                     }
                     done()
                 }).catch(err => done(err))
@@ -80,15 +80,37 @@ describe('User', () => {
                 .get('/user/' + existingUser.id)
                 .then(res => {
                     expect(res.body).toHaveProperty('guesses')
-                    expect(res.body.guesses).toHaveLength(5)
+                    expect(res.body.guesses).toHaveLength(10)
                     for (const guess of res.body.guesses) {
-                        expectGuessLocationEntity(guess)
+                        expectGuessLocationEntity(guess, false)
                     }
                     done()
                 }).catch(err => done(err))
         })
 
     })
+
+    describe('GET /user/my-profile', () => {
+        it('should return 401 when no Authentication header', (done) => {
+            request(app.getHttpServer())
+                .get('/user/my-profile')
+                .expect(401)
+                .then(res => done())
+                .catch(err => done(err))
+        })
+
+        it('should return 200 and UserEntity when Authentication header', (done) => {
+            request(app.getHttpServer())
+                .get('/user/my-profile')
+                .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toMatchObject(existingUser)
+                    done()
+                }).catch(err => done(err))
+        })
+    })
+
 
     afterAll(async () => {
         await app?.close();

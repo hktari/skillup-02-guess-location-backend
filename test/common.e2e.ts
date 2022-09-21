@@ -16,25 +16,29 @@ export function getAuthToken(app, { email, password }: UserEntity) {
 
 /* ------------------------------- // utility ------------------------------- */
 
-export function expectLocationEntity(location: any) {
+export function expectLocationEntity(location: any, expectRelations: boolean = true) {
     expect(location).toHaveProperty('id')
     expect(location).toHaveProperty('address')
     expect(location).toHaveProperty('lat')
     expect(location).toHaveProperty('lng')
     expect(location).toHaveProperty('imageUrl')
     expect(location).toHaveProperty('createdDate')
-    expect(location).toHaveProperty('user')
-    expect(location).toHaveProperty('guesses')
+    if(expectRelations){
+        expect(location).toHaveProperty('user')
+        expect(location).toHaveProperty('guesses')    
+    }
 }
 
-export function expectGuessLocationEntity(guessLocation: any) {
+export function expectGuessLocationEntity(guessLocation: any, expectRelations: boolean = true) {
     expect(guessLocation).toHaveProperty('id')
-    expect(guessLocation).toHaveProperty('user')
-    expect(guessLocation).toHaveProperty('location')
     expect(guessLocation).toHaveProperty('lat')
     expect(guessLocation).toHaveProperty('lng')
     expect(guessLocation).toHaveProperty('address')
     expect(guessLocation).toHaveProperty('errorInMeters')
+    if(expectRelations){
+        expect(guessLocation).toHaveProperty('user')
+        expect(guessLocation).toHaveProperty('location')    
+    }
 }
 
 export function expectUserEntity(user: any, expectRelations: boolean = true) {
