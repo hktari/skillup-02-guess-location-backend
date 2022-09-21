@@ -58,7 +58,7 @@ describe('Location', () => {
                 .then(res => {
                     expect(res.body).toHaveProperty('startIdx', 0)
                     expect(res.body).toHaveProperty('pageSize', 10)
-                    expect(res.body).toHaveProperty('totalItems', 15)
+                    expect(res.body).toHaveProperty('totalItems', 25)
                     expect(res.body).toHaveProperty('items')
 
                     for (const location of res.body.items) {
@@ -67,11 +67,31 @@ describe('Location', () => {
 
                     done()
                 })
+                .catch(err => done(err))
         })
 
         it('should return an ordered by timestamp DESC list of locations', (done) => {
-            expect(false).toBe(true)
-            done()
+            request(app.getHttpServer())
+                .get('/location')
+                .then(res => {
+                    let locationsList: LocationEntity[] = res.body.items
+
+                    for (let i = 0; i < locationsList.length; i++) {
+                        // i points to last element
+                        if (i === locationsList.length - 1) {
+                            break
+                        }
+                        
+                        const curElement = locationsList[i];
+                        const nextElement = locationsList[i + 1]
+                        const curLocCreatedDate = new Date(curElement.createdDate)
+                        const nextLocCreatedDate = new Date(nextElement.createdDate)
+                        expect(curLocCreatedDate.getTime()).toBeGreaterThanOrEqual(nextLocCreatedDate.getTime())
+                    }
+
+                    done()
+                })
+                .catch(err => done(err))
         })
     })
 
