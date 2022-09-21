@@ -5,6 +5,7 @@ import { UpdateUserProfileDto } from './dto/UpdateUserProfileDto';
 import { User } from './user.interface';
 import { UserService } from './user.service';
 import { Response as ExpressResponse, Request as ExRequest } from 'express';
+import { ChangePasswordDto } from './dto/ChangePasswordDto';
 
 
 @Controller('user')
@@ -43,7 +44,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
-  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body('password', new ValidationPipe()) password: string) {
+  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body() { password }: ChangePasswordDto) {
     await this.userService.setPassword(req.email, password)
     return res.sendStatus(200)
   }

@@ -12,7 +12,8 @@ import { expectGuessLocationEntity, expectLocationEntity, expectUserEntity } fro
 import { UserModule } from '../src/user/user.module';
 import { LocationModule } from '../src/location/location.module';
 import { AuthModule } from '../src/auth/auth.module';
-import { UpdateUserProfileDto } from 'src/user/dto/UpdateUserProfileDto';
+import { UpdateUserProfileDto } from '../src/user/dto/UpdateUserProfileDto';
+import { ChangePasswordDto } from '../src/user/dto/ChangePasswordDto';
 
 describe('User', () => {
     let app: INestApplication;
@@ -142,7 +143,7 @@ describe('User', () => {
 
             delete result.locations;
             delete result.guesses;
-            
+
             request(app.getHttpServer())
                 .put('/user/my-profile')
                 .send(profileUpdateDto)
@@ -152,6 +153,43 @@ describe('User', () => {
                     expect(res.body).toContainEqual(result)
                     done()
                 }).catch(err => done(err))
+        })
+    })
+
+    describe('PUT /user/my-profile/password', () => {
+        it('should return 401 when no Authentication header', (done) => {
+            request(app.getHttpServer())
+                .put('/user/my-profile/password')
+                .expect(401)
+                .then(res => done())
+                .catch(err => done(err))
+        })
+
+        it('should return 400 when password length is less than 5', (done) => {
+            const tooShortChangePasswordDto: ChangePasswordDto = {
+                password: 'new'
+            }
+
+            request(app.getHttpServer())
+                .put('/user/my-profile/password')
+                .send(tooShortChangePasswordDto)
+                .expect(400)
+                .then(res => done())
+                .catch(err => done(err))
+        })
+
+        it('should return 200 when valid Authentication header', (done) => {
+            const changePasswordDto: ChangePasswordDto = {
+                password: 'new-secret'
+            }
+
+            request(app.getHttpServer())
+                .put('/user/my-profile/password')
+                .auth(accessToken, { type: 'bearer' })
+                .send(changePasswordDto)
+                .expect(200)
+                .then(res => done())
+                .catch(err => done(err))
         })
     })
 
