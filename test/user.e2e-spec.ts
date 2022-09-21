@@ -8,7 +8,7 @@ import { UserEntity } from '../src/user/entities/user.entity'
 import { LocationEntity } from '../src/location/entities/location.entity';
 import { UserService } from '../src/user/user.service';
 import { LocationService } from '../src/location/location.service';
-import { expectGuessLocationEntity, expectLocationEntity } from './common.e2e';
+import { expectGuessLocationEntity, expectLocationEntity, expectUserEntity } from './common.e2e';
 import { UserModule } from '../src/user/user.module';
 import { LocationModule } from '../src/location/location.module';
 import { AuthModule } from '../src/auth/auth.module';
@@ -57,7 +57,7 @@ describe('User', () => {
                 .get('/user/' + existingUser.id)
                 .then(res => {
                     expect(res.statusCode).toBe(200)
-                    expect(res.body).toContainEqual(existingUser)
+                    expectUserEntity(res.body)
                     done()
                 })
         })
@@ -71,7 +71,8 @@ describe('User', () => {
                     for (const location of res.body.locations) {
                         expectLocationEntity(location)
                     }
-                })
+                    done()
+                }).catch(err => done(err))
         })
 
         it('user object should contain guesses', (done) => {
@@ -83,7 +84,8 @@ describe('User', () => {
                     for (const guess of res.body.guesses) {
                         expectGuessLocationEntity(guess)
                     }
-                })
+                    done()
+                }).catch(err => done(err))
         })
 
     })

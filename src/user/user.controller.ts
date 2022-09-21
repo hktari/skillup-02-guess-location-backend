@@ -1,4 +1,4 @@
-import { Request, Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseInterceptors, UseGuards, DefaultValuePipe, ParseIntPipe, Query } from '@nestjs/common';
+import { Request, Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseInterceptors, UseGuards, DefaultValuePipe, ParseIntPipe, Query, NotFoundException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from './dto/CreateUserDto';
 import { User } from './user.interface';
@@ -15,12 +15,18 @@ export class UserController {
   getAll(
     @Query('startIdx', new DefaultValuePipe(0), new ParseIntPipe()) startIdx: number,
     @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number) {
-      return this.userService.getAll(startIdx, pageSize)
+    return this.userService.getAll(startIdx, pageSize)
   }
 
   @Get(':id')
-  getSingle(@Param('id') id: string) {
-    return this.userService.getOne(id)
+  async getSingle(@Param('id') id: string) {
+    const user = await this.userService.getOne(id)
+
+    if (!user) {
+      throw new NotFoundException(`Failed to find user with id ${id}`)
+    }
+
+    return user
   }
 
 }
