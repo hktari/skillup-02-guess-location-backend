@@ -5,24 +5,31 @@ import CreateLocationDto from './dto/CreateLocationDto';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { LocationService } from './location.service';
 import { AuthGuard } from '@nestjs/passport';
-import { PaginationDto } from 'src/common/dto/PaginationDto';
+import { PaginationDto } from '../common/dto/PaginationDto';
+import { AwsService } from '../aws/aws.service';
+import { LoggingService } from '../logging/logging.service';
+const { v4: uuidv4 } = require('uuid');
 
 @Roles('user')
 @Controller('location')
 @UseInterceptors(ClassSerializerInterceptor)
 export class LocationController {
-  constructor(private readonly locationService: LocationService) { }
+  constructor(private readonly locationService: LocationService, private awsService: AwsService, private logger: LoggingService) { }
 
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Request() req, @Body() createLocationDto: CreateLocationDto) {
+  async create(@Request() req, @Body() createLocationDto: CreateLocationDto) {
+
+    const imageId = uuidv4()
+    const imageUrl = await this.awsService.uploadImage(imageId, createLocationDto.imageBase64)
+
     return this.locationService.create(req.user,
       {
         address: createLocationDto.address,
         lat: createLocationDto.lat,
         lng: createLocationDto.lng,
-        imageUrl: 'TODO'
+        imageUrl
       })
   }
 
@@ -36,8 +43,8 @@ export class LocationController {
 
 
   @Get('/random')
-  async getRandom(){
-    return this.locationService.getRandom()    
+  async getRandom() {
+    return this.locationService.getRandom()
   }
 
   @Get(':id')
@@ -58,7 +65,21 @@ export class LocationController {
       throw new ForbiddenException(`User ${req.user.email} can't update location ${location.id} added by ${location.user?.email}`)
     }
 
-    return this.locationService.update(id, updateLocationDto)
+
+    const locationUpdate = {
+      address: updateLocationDto.address,
+      lat: updateLocationDto.lat,
+      lng: updateLocationDto.lng,
+      imageUrl: location.imageUrl
+    }
+
+    if (updateLocationDto.imageBase64) {
+      this.logger.debug('Received imageBase64', 'LocationController')
+      const imageId = uuidv4()
+      locationUpdate.imageUrl = await this.awsService.uploadImage(imageId, updateLocationDto.imageBase64)
+    }
+
+    return this.locationService.update(id, locationUpdate)
   }
 
   @Delete(':id')

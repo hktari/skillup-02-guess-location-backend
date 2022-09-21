@@ -65,20 +65,17 @@ export class LocationService {
         })
     }
 
-    async update(id: string, { address, imageBase64, lat, lng }: UpdateLocationDto): Promise<LocationEntity> {
+    async update(id: string, { address, imageUrl, lat, lng }): Promise<LocationEntity> {
         const location = await this.locationRepository.findOneBy({ id })
         if (!location) {
             throw new NotFoundException(`Location with id ${id} was not found.`)
         }
 
-        if (imageBase64) {
-            // todo: get url
-        }
-
         location.address = address
         location.lat = lat
         location.lng = lng
-
+        location.imageUrl = imageUrl
+        
         return this.locationRepository.save(location)
     }
 

@@ -9,9 +9,10 @@ import { userProviders } from '../user/providers/user.provider';
 import { UserService } from '../user/user.service';
 import { CryptoService } from '../auth/crypto.service';
 import { LoggingModule } from '../logging/logging.module';
+import { AwsModule } from '../aws/aws.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, LoggingModule],
+  imports: [DatabaseModule, UserModule, LoggingModule, AwsModule],
   controllers: [LocationController, GuessLocationController],
   providers: [LocationService, ...locationProviders, UserService, ...userProviders, CryptoService]
 })
