@@ -43,22 +43,21 @@ export class UserController {
     })
   }
 
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/image')
   async updateProfileImage(@Request() req, @Body("imageBase64", new ValidationPipe()) imageBase64: string) {
-    // todo: if imageBase64 get imageUrl
     let imageUrl
     if (imageBase64) {
       this.logger.debug('received imageBase64')
-      imageUrl = await this.awsService.uploadImage('test', imageBase64)
+      imageUrl = await this.awsService.uploadImage(req.user.id, imageBase64)
     }
-    return imageUrl
-    // return this.userService.update({
-    //   email: req.user.email,
-    //   firstName: firstName ?? req.user.firstName,
-    //   lastName: lastName ?? req.user.lastName,
-    //   imageUrl: imageUrl
-    // })
+
+    return await this.userService.update({
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      imageUrl: imageUrl
+    })
   }
 
 
