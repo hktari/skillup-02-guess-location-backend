@@ -14,7 +14,8 @@ import { LocationModule } from '../src/location/location.module';
 import { AuthModule } from '../src/auth/auth.module';
 import { UpdateUserProfileDto } from '../src/user/dto/UpdateUserProfileDto';
 import { ChangePasswordDto } from '../src/user/dto/ChangePasswordDto';
-import { AppLogger } from '../src/common/services/app-logger.service';
+import { LoggingModule } from '../src/logging/logging.module';
+import { LoggingService } from '../src/logging/logging.service';
 
 describe('User', () => {
     let app: INestApplication;
@@ -29,13 +30,12 @@ describe('User', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
-            providers: [AppLogger]
+            imports: [LoggingModule, UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
         })
             .compile();
 
-        app = moduleRef.createNestApplication();
-        app.useLogger(app.get<AppLogger>(AppLogger))
+        app = moduleRef.createNestApplication({ bufferLogs: true });
+        app.useLogger(app.get<LoggingService>(LoggingService))
 
         await app.init();
         authService = moduleRef.get<AuthService>(AuthService)

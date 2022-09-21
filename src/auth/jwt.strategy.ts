@@ -4,11 +4,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config'
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { AppLogger } from '../common/services/app-logger.service';
+import { LoggingService } from '../logging/logging.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(configService: ConfigService, private authService: AuthService, private logger: AppLogger) {
+    constructor(configService: ConfigService, private authService: AuthService, private logger: LoggingService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,

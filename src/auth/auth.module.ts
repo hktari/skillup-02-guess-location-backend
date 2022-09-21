@@ -7,9 +7,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy'
 import { ConfigService } from '@nestjs/config'
 import { CryptoService } from './crypto.service';
+import { LoggingModule } from '../logging/logging.module';
 
 @Module({
-    imports: [UserModule,
+    imports: [LoggingModule, UserModule,
         PassportModule,
         JwtModule.registerAsync(
             {

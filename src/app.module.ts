@@ -13,10 +13,11 @@ import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { AppLogger } from './common/services/app-logger.service';
+import { LoggingModule } from './logging/logging.module';
 
 @Global()
 @Module({
-  imports: [UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, }), AuthModule],
+  imports: [LoggingModule, UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, }), AuthModule, LoggingModule],
   controllers: [AppController],
   providers: [
     AppService,
