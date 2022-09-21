@@ -86,7 +86,7 @@ describe('User', () => {
                 .get('/user/' + existingUser.id)
                 .then(res => {
                     expect(res.body).toHaveProperty('guesses')
-                    expect(res.body.guesses).toHaveLength(10)
+                    expect(res.body.guesses).toHaveLength(5)
                     for (const guess of res.body.guesses) {
                         expectGuessLocationEntity(guess, false)
                     }
@@ -106,16 +106,20 @@ describe('User', () => {
         })
 
         it('should return 200 and UserEntity when Authentication header', (done) => {
-            const result = { ...existingUser }
-            result.locations = []
-            result.guesses = []
-
             request(app.getHttpServer())
                 .get('/user/my-profile')
                 .auth(accessToken, { type: 'bearer' })
                 .then(res => {
                     expect(res.statusCode).toBe(200)
-                    expect(res.body).toContainEqual(existingUser)
+
+                    const userObj = JSON.parse(JSON.stringify(res.body), (prop, val) => {
+                        if (prop === 'createdDate') {
+                            return new Date(val)
+                        }
+                        else return val;
+                    })
+
+                    expect(userObj).toContainEqual(existingUser)
                     done()
                 }).catch(err => done(err))
         })
@@ -172,6 +176,7 @@ describe('User', () => {
 
             request(app.getHttpServer())
                 .put('/user/my-profile/password')
+                .auth(accessToken, { type: 'bearer' })
                 .send(tooShortChangePasswordDto)
                 .expect(400)
                 .then(res => done())

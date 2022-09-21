@@ -12,7 +12,7 @@ export class AuthService {
     }
 
     async validateUser(email: string): Promise<UserEntity> {
-        return await this.usersService.getByEmail(email)
+        return await this.usersService.getByEmail(email, false)
     }
 
     async login(email: string, password: string) {

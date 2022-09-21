@@ -63,7 +63,8 @@ export class UserService {
         userEntity.lastName = lastName
         userEntity.imageUrl = imageUrl
 
-        return await this.userRepository.save(userEntity)
+        await this.userRepository.save(userEntity)
+        return userEntity
     }
 
     async setPassword(email: string, password: string) {

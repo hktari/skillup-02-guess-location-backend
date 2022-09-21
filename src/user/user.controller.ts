@@ -44,7 +44,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
-  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body() { password }: ChangePasswordDto) {
+  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body(new ValidationPipe()) { password }: ChangePasswordDto) {
     await this.userService.setPassword(req.email, password)
     return res.sendStatus(200)
   }
