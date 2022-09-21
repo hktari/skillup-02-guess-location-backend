@@ -14,6 +14,7 @@ import { LocationEntity } from '../src/location/entities/location.entity';
 import CreateLocationDto from '../src/location/dto/CreateLocationDto';
 import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
 import { LocationService } from '../src/location/location.service';
+import { expectLocationEntity, expectGuessLocationEntity } from './common.e2e';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -49,33 +50,30 @@ describe('Location', () => {
         existingLocation = existingUser.locations[0]
     })
 
-    // describe('GET /location', () => {
-    //     it('should return a paginated list of location objects', (done) => {
+    describe('GET /location', () => {
+        it('should return a paginated list of location objects', (done) => {
 
-    //         request(app.getHttpServer())
-    //             .get('/location')
-    //             .then(res => {
-    //                 expect(res.body).toHaveProperty('startIdx', 0)
-    //                 expect(res.body).toHaveProperty('pageSize', 10)
-    //                 expect(res.body).toHaveProperty('totalItems', 15)
-    //                 expect(res.body).toHaveProperty('items')
+            request(app.getHttpServer())
+                .get('/location')
+                .then(res => {
+                    expect(res.body).toHaveProperty('startIdx', 0)
+                    expect(res.body).toHaveProperty('pageSize', 10)
+                    expect(res.body).toHaveProperty('totalItems', 15)
+                    expect(res.body).toHaveProperty('items')
 
-    //                 for (const location of res.body.items) {
-    //                     expect(location).toHaveProperty('lat')
-    //                     expect(location).toHaveProperty('lng')
-    //                     expect(location).toHaveProperty('imageUrl')
-    //                     expect(location).toHaveProperty('address')
-    //                 }
+                    for (const location of res.body.items) {
+                        expectLocationEntity(location)
+                    }
 
-    //                 done()
-    //             })
-    //     })
+                    done()
+                })
+        })
 
-    //     it('should return an ordered by timestamp DESC list of locations', (done) => {
-    //         expect(false).toBe(true)
-    //         done()
-    //     })
-    // })
+        it('should return an ordered by timestamp DESC list of locations', (done) => {
+            expect(false).toBe(true)
+            done()
+        })
+    })
 
     describe('PUT /location/:id', () => {
 
@@ -265,26 +263,3 @@ describe('Location', () => {
         await app?.close();
     })
 });
-
-
-/* ------------------------------- // utility ------------------------------- */
-
-function expectLocationEntity(location: any) {
-    expect(location).toHaveProperty('id')
-    expect(location).toHaveProperty('address')
-    expect(location).toHaveProperty('lat')
-    expect(location).toHaveProperty('lng')
-    expect(location).toHaveProperty('imageUrl')
-    expect(location).toHaveProperty('createdDate')
-    expect(location).toHaveProperty('user')
-    expect(location).toHaveProperty('guesses')
-}
-function expectGuessLocationEntity(guessLocation: any) {
-    expect(guessLocation).toHaveProperty('id')
-    expect(guessLocation).toHaveProperty('user')
-    expect(guessLocation).toHaveProperty('location')
-    expect(guessLocation).toHaveProperty('lat')
-    expect(guessLocation).toHaveProperty('lng')
-    expect(guessLocation).toHaveProperty('address')
-    expect(guessLocation).toHaveProperty('errorInMeters')
-}

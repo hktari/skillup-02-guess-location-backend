@@ -11,3 +11,41 @@ export function getAuthToken(app, { email, password }: UserEntity) {
         .send(validCredentials)
         .then(res => res.body.access_token)
 }
+
+
+
+/* ------------------------------- // utility ------------------------------- */
+
+export function expectLocationEntity(location: any) {
+    expect(location).toHaveProperty('id')
+    expect(location).toHaveProperty('address')
+    expect(location).toHaveProperty('lat')
+    expect(location).toHaveProperty('lng')
+    expect(location).toHaveProperty('imageUrl')
+    expect(location).toHaveProperty('createdDate')
+    expect(location).toHaveProperty('user')
+    expect(location).toHaveProperty('guesses')
+}
+
+export function expectGuessLocationEntity(guessLocation: any) {
+    expect(guessLocation).toHaveProperty('id')
+    expect(guessLocation).toHaveProperty('user')
+    expect(guessLocation).toHaveProperty('location')
+    expect(guessLocation).toHaveProperty('lat')
+    expect(guessLocation).toHaveProperty('lng')
+    expect(guessLocation).toHaveProperty('address')
+    expect(guessLocation).toHaveProperty('errorInMeters')
+}
+
+export function expectUserEntity(user: any, expectRelations: boolean = true) {
+    expect(user).toHaveProperty('id')
+    expect(user).toHaveProperty('firstName')
+    expect(user).toHaveProperty('lastName')
+    expect(user).toHaveProperty('email')
+    expect(user).not.toHaveProperty('password')
+    expect(user).toHaveProperty('imageUrl')
+    if (expectRelations) {
+        expect(user).toHaveProperty('locations')
+        expect(user).toHaveProperty('guesses')
+    }
+}
