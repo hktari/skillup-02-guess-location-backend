@@ -109,11 +109,15 @@ describe('User', () => {
                 .auth(accessToken, { type: 'bearer' })
                 .then(res => {
                     expect(res.statusCode).toBe(200)
-                    expect(res.body).toMatchObject(result)
+                    expect(res.body).toContainEqual(existingUser)
                     done()
                 }).catch(err => done(err))
         })
     })
+
+    describe('PUT /user/my-profile', (done) => {
+
+     })
 
 
     afterAll(async () => {

@@ -8,7 +8,7 @@ export class GuessLocationEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string
 
-    @ManyToOne(() => UserEntity, (user) => user.locations)
+    @ManyToOne(() => UserEntity, (user) => user.guesses)
     @JoinColumn()
     user: UserEntity
 
