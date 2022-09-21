@@ -42,7 +42,11 @@ describe('User', () => {
         const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
         existingUser = await userService.getByEmail('existing.user@example.com')
+        delete existingUser.password
+
         anotherUser = await userService.getByEmail('another.user@example.com')
+        delete anotherUser.password
+
         existingLocation = existingUser.locations[0]
     })
 
@@ -133,12 +137,16 @@ describe('User', () => {
             const result = {
                 ...existingUser,
                 firstName: profileUpdateDto.firstName,
-                lastName: profileUpdateDto.lastName
+                lastName: profileUpdateDto.lastName,
             }
 
+            delete result.locations;
+            delete result.guesses;
+            
             request(app.getHttpServer())
                 .put('/user/my-profile')
                 .send(profileUpdateDto)
+                .auth(accessToken, { type: 'bearer' })
                 .expect(200)
                 .then(res => {
                     expect(res.body).toContainEqual(result)

@@ -25,7 +25,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('my-profile')
   getMyProfile(@Request() req) {
-    return this.userService.getByEmail(req.email)
+    return this.userService.getOne(req.id)
   }
 
   @UseGuards(AuthGuard('jwt'))
