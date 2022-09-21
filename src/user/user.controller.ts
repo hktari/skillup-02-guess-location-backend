@@ -22,11 +22,13 @@ export class UserController {
   }
 
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('my-profile')
   getMyProfile(@Request() req) {
     return this.userService.getByEmail(req.email)
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put('my-profile')
   updateMyProfile(@Request() req, @Body() { firstName, lastName, imageBase64 }: UpdateUserProfileDto) {
     // todo: if imageBase64 get imageUrl
@@ -39,6 +41,7 @@ export class UserController {
     })
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
   async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body('password', new ValidationPipe()) password: string) {
     await this.userService.setPassword(req.email, password)

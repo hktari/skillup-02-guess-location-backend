@@ -6,7 +6,6 @@ export default setSeederFactory(GuessLocationEntity, (faker) => {
     guess.address = `${faker.address.street()}, ${faker.address.city()}, ${faker.address.country()}`;
     guess.lat = +faker.address.latitude()
     guess.lng = +faker.address.longitude()
-    guess.errorInMeters = +faker.random.numeric(3) / +faker.random.numeric(1)
-    console.log('errorInMeters', guess.errorInMeters)
+    guess.errorInMeters = Math.trunc(+faker.random.numeric(3) / +faker.random.numeric(1))
     return guess;
 })

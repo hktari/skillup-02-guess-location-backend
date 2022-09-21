@@ -100,12 +100,16 @@ describe('User', () => {
         })
 
         it('should return 200 and UserEntity when Authentication header', (done) => {
+            const result = {...existingUser}
+            result.locations = []
+            result.guesses = []
+
             request(app.getHttpServer())
                 .get('/user/my-profile')
                 .auth(accessToken, { type: 'bearer' })
                 .then(res => {
                     expect(res.statusCode).toBe(200)
-                    expect(res.body).toMatchObject(existingUser)
+                    expect(res.body).toMatchObject(result)
                     done()
                 }).catch(err => done(err))
         })
