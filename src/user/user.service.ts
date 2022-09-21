@@ -39,17 +39,38 @@ export class UserService {
                 locations: true,
                 guesses: true
             },
+            order: {
+                locations: {
+                    createdDate: 'DESC'
+                },
+                guesses: {
+                    createdDate: 'DESC'
+                }
+            }
         })
     }
 
     getByEmail(email: string, includeRelations: boolean = true) {
-        return this.userRepository.findOne({
+        const opts = {
             where: { email },
             relations: {
                 locations: includeRelations,
                 guesses: includeRelations
-            },
-        })
+            }
+        }
+
+        if (includeRelations) {
+            opts['order'] = {
+                locations: {
+                    createdDate: 'DESC'
+                },
+                guesses: {
+                    createdDate: 'DESC'
+                }
+            }
+        }
+        
+        return this.userRepository.findOne(opts)
     }
 
     async update({ email, firstName, lastName, imageUrl }) {
@@ -58,7 +79,6 @@ export class UserService {
             throw new NotFoundException('user not found. email: ' + email)
         }
 
-        userEntity.email = email
         userEntity.firstName = firstName
         userEntity.lastName = lastName
         userEntity.imageUrl = imageUrl
