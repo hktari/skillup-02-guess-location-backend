@@ -6,12 +6,13 @@ import { User } from './user.interface';
 import { UserService } from './user.service';
 import { Response as ExpressResponse, Request as ExRequest } from 'express';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
+import { LoggingService } from '../logging/logging.service';
 
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService, private logger : LoggingService) {
 
   }
 
@@ -26,7 +27,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('my-profile')
   getMyProfile(@Request() req) {
-    return this.userService.getOne(req.id)
+    this.logger.debug('req.user\n' + JSON.stringify(req.user), 'UserController')
+    return this.userService.getOne(req.user.id)
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -35,17 +37,17 @@ export class UserController {
     // todo: if imageBase64 get imageUrl
 
     return this.userService.update({
-      email: req.email,
-      firstName: firstName ?? req.firstName,
-      lastName: lastName ?? req.lastName,
-      imageUrl: req.imageUrl
+      email: req.user.email,
+      firstName: firstName ?? req.user.firstName,
+      lastName: lastName ?? req.user.lastName,
+      imageUrl: req.user.imageUrl
     })
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
   async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body(new ValidationPipe()) { password }: ChangePasswordDto) {
-    await this.userService.setPassword(req.email, password)
+    await this.userService.setPassword(req.user.email, password)
     return res.sendStatus(200)
   }
 

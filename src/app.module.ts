@@ -12,12 +12,11 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { AppLogger } from './common/services/app-logger.service';
 import { LoggingModule } from './logging/logging.module';
 
 @Global()
 @Module({
-  imports: [LoggingModule, UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ isGlobal: true, }), AuthModule, LoggingModule],
+  imports: [LoggingModule, UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath:'./test.env', isGlobal: true, }), AuthModule, LoggingModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -25,7 +24,6 @@ import { LoggingModule } from './logging/logging.module';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    AppLogger
   ]
 })
 export class AppModule implements NestModule {

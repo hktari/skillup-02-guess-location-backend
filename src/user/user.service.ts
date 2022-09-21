@@ -4,11 +4,12 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { User } from './user.interface';
 import { CryptoService } from '../../src/auth/crypto.service';
-import { PaginatedCollection } from 'src/common/interface/PaginatedCollection';
+import { PaginatedCollection } from '../common/interface/PaginatedCollection';
+import { LoggingService } from '../logging/logging.service';
 
 @Injectable()
 export class UserService {
-    constructor(@Inject(UserRepository) private userRepository: Repository<UserEntity>, private cryptoService: CryptoService) {
+    constructor(@Inject(UserRepository) private userRepository: Repository<UserEntity>, private cryptoService: CryptoService, private logger: LoggingService) {
 
     }
 
@@ -51,6 +52,8 @@ export class UserService {
     }
 
     getByEmail(email: string, includeRelations: boolean = true) {
+        this.logger.debug(`getByEmail(${email})`, 'UserService')
+
         const opts = {
             where: { email: email },
             relations: {

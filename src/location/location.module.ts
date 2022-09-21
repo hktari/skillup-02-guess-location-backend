@@ -8,9 +8,10 @@ import { UserModule } from '../user/user.module';
 import { userProviders } from '../user/providers/user.provider';
 import { UserService } from '../user/user.service';
 import { CryptoService } from '../auth/crypto.service';
+import { LoggingModule } from '../logging/logging.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule],
+  imports: [DatabaseModule, UserModule, LoggingModule],
   controllers: [LocationController, GuessLocationController],
   providers: [LocationService, ...locationProviders, UserService, ...userProviders, CryptoService]
 })
