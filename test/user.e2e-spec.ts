@@ -12,6 +12,7 @@ import { expectGuessLocationEntity, expectLocationEntity, expectUserEntity } fro
 import { UserModule } from '../src/user/user.module';
 import { LocationModule } from '../src/location/location.module';
 import { AuthModule } from '../src/auth/auth.module';
+import { UpdateUserProfileDto } from 'src/user/dto/UpdateUserProfileDto';
 
 describe('User', () => {
     let app: INestApplication;
@@ -100,7 +101,7 @@ describe('User', () => {
         })
 
         it('should return 200 and UserEntity when Authentication header', (done) => {
-            const result = {...existingUser}
+            const result = { ...existingUser }
             result.locations = []
             result.guesses = []
 
@@ -115,9 +116,36 @@ describe('User', () => {
         })
     })
 
-    describe('PUT /user/my-profile', (done) => {
+    describe('PUT /user/my-profile', () => {
+        it('should return 401 when no Authentication header', (done) => {
+            request(app.getHttpServer())
+                .put('/user/my-profile')
+                .expect(401)
+                .then(res => done())
+                .catch(err => done(err))
+        })
 
-     })
+        it('should return 200 and UserEntity when valid Authentication header', (done) => {
+            const profileUpdateDto: UpdateUserProfileDto = {
+                firstName: 'Marko',
+                lastName: 'Zajeban'
+            }
+            const result = {
+                ...existingUser,
+                firstName: profileUpdateDto.firstName,
+                lastName: profileUpdateDto.lastName
+            }
+
+            request(app.getHttpServer())
+                .put('/user/my-profile')
+                .send(profileUpdateDto)
+                .expect(200)
+                .then(res => {
+                    expect(res.body).toContainEqual(result)
+                    done()
+                }).catch(err => done(err))
+        })
+    })
 
 
     afterAll(async () => {
