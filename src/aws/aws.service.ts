@@ -22,23 +22,17 @@ export class AwsService {
 
             // Create S3 service object
             var s3 = new AWS.S3({ apiVersion: '2006-03-01' });
-            var uploadParams = { Bucket: this.bucketName, Key: '', Body: null! };
+            var uploadParams = { Bucket: this.bucketName, Key: `${objectId}.jpeg`, Body: null! };
 
             logger.debug('received imageBase64', 'AwsService')
 
-            var stream = new PassThrough();
-            stream.write(imageBase64);
-            stream.end();
+            const buffer = Buffer.from(imageBase64, "base64");
 
-            // Configure the file stream and obtain the upload parameters
-            // var fs = require('fs');
-            // var fileStream = fs.createReadStream();
-            // fileStream.on('error', function (err) {
-            //     console.log('File Error', err);
-            // });
+            var base64Stream = new PassThrough();
+            base64Stream.write(buffer, "base64")
+            base64Stream.end();
 
-            uploadParams.Body = stream;
-            uploadParams.Key = objectId;
+            uploadParams.Body = base64Stream;
 
             logger.debug('uploading image...', 'AwsService')
             // call S3 to retrieve upload file to specified bucket
