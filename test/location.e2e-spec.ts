@@ -274,6 +274,7 @@ describe('Location', () => {
                 .then(res => {
                     expect(res.statusCode).toBe(201)
                     expectGuessLocationEntity(res.body)
+                    expect(res.body.errorInMeters).toBeInstanceOf(Number)
                     done()
                 }).catch(err => done(err))
         })

@@ -9,11 +9,13 @@ import { PaginatedCollection } from '../common/interface/PaginatedCollection';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { GuessLocationEntity } from './entities/guess-location.entity';
 import { GuessLocationDto } from './dto/GuessLocationDto';
+import { distanceInKmBetweenEarthCoordinates, distanceInMetersBetweenEarthCoordinates } from '../common/utility';
 @Injectable()
 export class LocationService {
     constructor(
         @Inject(LocationRepository) private locationRepository: Repository<LocationEntity>,
-        @Inject(GuessLocationRepository) private guessLocationRepository: Repository<GuessLocationEntity>) {
+        @Inject(GuessLocationRepository) private guessLocationRepository: Repository<GuessLocationEntity>,
+        private userService: UserService) {
 
     }
 
@@ -107,19 +109,19 @@ export class LocationService {
         return itemsList[0]
     }
 
-    async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto) : Promise<GuessLocationEntity>{
+    async guessLocation(locationId: string, userId: string, { address, lat, lng }: GuessLocationDto): Promise<GuessLocationEntity> {
         const location = await this.findOne(locationId)
         if (!location) {
             throw new NotFoundException(`Location with id ${locationId} was not found.`)
         }
 
-        const user: UserEntity = location.user
+
+        const user: UserEntity = await this.userService.getOne(userId)
         if (!user) {
-            throw new BadRequestException(`The location with id ${locationId} has no user`)
+            throw new BadRequestException(`User with id ${userId} wasn't found`)
         }
 
-        // todo: calculate error
-        const errorInMeters: number = 0
+        const errorInMeters: number = distanceInMetersBetweenEarthCoordinates(lat, lng, location.lat, location.lng)
 
         let locationGuess = this.guessLocationRepository.create({
             address,
@@ -134,7 +136,7 @@ export class LocationService {
 
         location.guesses.push(locationGuess)
         await this.locationRepository.save(location)
-        
+
         return locationGuess;
     }
 }
