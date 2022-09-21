@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { LoggingService } from '../logging/logging.service'
 import { PassThrough } from 'node:stream';
+import { ConfigService } from '@nestjs/config';
 // Load the SDK for JavaScript
 const AWS = require('aws-sdk');
 // Set the Region 
@@ -9,12 +10,9 @@ AWS.config.update({ region: 'eu-central-1' });
 
 @Injectable()
 export class AwsService {
-    constructor(private logger: LoggingService) {
+    constructor(private logger: LoggingService, private configService: ConfigService) {
 
     }
-
-    baseUrl: string = "https://skillupmentor.s3.eu-central-1.amazonaws.com"
-    bucketName = 'skillupmentor'
 
     uploadImage(objectId: string, imageBase64: string): Promise<string> {
         return new Promise((resolve, reject) => {
@@ -22,7 +20,7 @@ export class AwsService {
 
             // Create S3 service object
             var s3 = new AWS.S3({ apiVersion: '2006-03-01' });
-            var uploadParams = { Bucket: this.bucketName, Key: `${objectId}.jpeg`, Body: null! };
+            var uploadParams = { Bucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME'), Key: `${objectId}.jpeg`, Body: null! };
 
             logger.debug('received imageBase64', 'AwsService')
 
