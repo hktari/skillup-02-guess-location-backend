@@ -14,6 +14,7 @@ import { LocationModule } from '../src/location/location.module';
 import { AuthModule } from '../src/auth/auth.module';
 import { UpdateUserProfileDto } from '../src/user/dto/UpdateUserProfileDto';
 import { ChangePasswordDto } from '../src/user/dto/ChangePasswordDto';
+import { AppLogger } from '../src/common/services/app-logger.service';
 
 describe('User', () => {
     let app: INestApplication;
@@ -29,10 +30,13 @@ describe('User', () => {
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            providers: [AppLogger]
         })
             .compile();
 
         app = moduleRef.createNestApplication();
+        app.useLogger(app.get<AppLogger>(AppLogger))
+
         await app.init();
         authService = moduleRef.get<AuthService>(AuthService)
         userService = moduleRef.get<UserService>(UserService)
@@ -42,6 +46,7 @@ describe('User', () => {
     beforeEach(async () => {
         const loginResponse = await authService.login('existing.user@example.com', 'secret')
         accessToken = loginResponse.access_token
+
         existingUser = await userService.getByEmail('existing.user@example.com')
         delete existingUser.password
 
@@ -119,7 +124,12 @@ describe('User', () => {
                         else return val;
                     })
 
-                    expect(userObj).toContainEqual(existingUser)
+
+
+                    expect({ ...userObj, locations: [], guesses: [] }).toContainEqual({ ...existingUser, locations: [], guesses: [] })
+                    expect(userObj.locations).toMatchObject(existingUser.locations)
+                    expect(userObj.guesses).toMatchObject(existingUser.guesses)
+
                     done()
                 }).catch(err => done(err))
         })

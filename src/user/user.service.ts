@@ -52,7 +52,7 @@ export class UserService {
 
     getByEmail(email: string, includeRelations: boolean = true) {
         const opts = {
-            where: { email },
+            where: { email: email },
             relations: {
                 locations: includeRelations,
                 guesses: includeRelations
@@ -69,7 +69,7 @@ export class UserService {
                 }
             }
         }
-        
+
         return this.userRepository.findOne(opts)
     }
 
@@ -84,6 +84,10 @@ export class UserService {
         userEntity.imageUrl = imageUrl
 
         await this.userRepository.save(userEntity)
+
+        userEntity.email = email
+        userEntity.imageUrl = imageUrl
+
         return userEntity
     }
 
