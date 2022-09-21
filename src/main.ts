@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import "reflect-metadata";
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingService } from './logging/logging.service';
+import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -18,6 +19,9 @@ async function bootstrap() {
       always: true,
     }),
   );
+
+
+  app.use(json({ limit: '50mb' }));
 
   await app.listen(3000);
 }

@@ -13,10 +13,12 @@ import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingModule } from './logging/logging.module';
+import { AwsModule } from './aws/aws.module';
 
 @Global()
 @Module({
-  imports: [LoggingModule, UserModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath:'./test.env', isGlobal: true, }), AuthModule, LoggingModule],
+  imports: [AwsModule, LoggingModule, UserModule, LocationModule, DatabaseModule,
+     ConfigModule.forRoot({ envFilePath:'./.env', isGlobal: true, }), AuthModule, LoggingModule, AwsModule],
   controllers: [AppController],
   providers: [
     AppService,

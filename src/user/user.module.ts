@@ -7,9 +7,10 @@ import { userProviders } from './providers/user.provider';
 import { AuthModule } from '../auth/auth.module';
 import { CryptoService } from '../auth/crypto.service';
 import { LoggingModule } from '../logging/logging.module';
+import { AwsModule } from '../aws/aws.module';
 
 @Module({
-  imports: [DatabaseModule, LoggingModule],
+  imports: [DatabaseModule, LoggingModule, AwsModule],
   controllers: [UserController],
   providers: [UserService, ...userProviders, CryptoService],
   exports: [UserService, ...userProviders]

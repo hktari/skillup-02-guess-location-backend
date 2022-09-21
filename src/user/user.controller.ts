@@ -7,12 +7,13 @@ import { UserService } from './user.service';
 import { Response as ExpressResponse, Request as ExRequest } from 'express';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import { LoggingService } from '../logging/logging.service';
+import { AwsService } from '../aws/aws.service';
 
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService, private logger : LoggingService) {
+  constructor(private readonly userService: UserService, private logger: LoggingService, private awsService: AwsService) {
 
   }
 
@@ -34,8 +35,6 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile')
   updateMyProfile(@Request() req, @Body() { firstName, lastName, imageBase64 }: UpdateUserProfileDto) {
-    // todo: if imageBase64 get imageUrl
-
     return this.userService.update({
       email: req.user.email,
       firstName: firstName ?? req.user.firstName,
@@ -43,6 +42,25 @@ export class UserController {
       imageUrl: req.user.imageUrl
     })
   }
+
+  // @UseGuards(AuthGuard('jwt'))
+  @Put('my-profile/image')
+  async updateProfileImage(@Request() req, @Body("imageBase64", new ValidationPipe()) imageBase64: string) {
+    // todo: if imageBase64 get imageUrl
+    let imageUrl
+    if (imageBase64) {
+      this.logger.debug('received imageBase64')
+      imageUrl = await this.awsService.uploadImage('test', imageBase64)
+    }
+    return imageUrl
+    // return this.userService.update({
+    //   email: req.user.email,
+    //   firstName: firstName ?? req.user.firstName,
+    //   lastName: lastName ?? req.user.lastName,
+    //   imageUrl: imageUrl
+    // })
+  }
+
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
