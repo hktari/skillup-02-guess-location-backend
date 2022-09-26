@@ -3,7 +3,7 @@ version: '3'
 services:
   webserver:
       build: ./nginx/
-      # image: hktari/quotesapp-webserver
+      image: hktari/nginx
       ports:
         - 80:80
         - 443:443
@@ -12,7 +12,7 @@ services:
         - ./certbot/www:/var/www/certbot/:ro
         - ./certbot/conf/:/etc/nginx/ssl/:ro
       environment:
-        - API_HOST=backend
+        - API_HOST=geotagger-backend
         - API_PORT=${BACKEND_PORT}
         - DOMAIN=localhost
   certbot:
@@ -20,9 +20,9 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
-  backend:
+  geotagger-backend:
     build: ./app
-    # image: hktari/assistant-logging_backend
+    image: hktari/geotagger-backend
     extra_hosts:
       - host.docker.internal:host-gateway
     ports:
