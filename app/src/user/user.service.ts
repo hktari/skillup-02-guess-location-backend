@@ -3,7 +3,7 @@ import { UserRepository } from '../common/constants';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { User } from './user.interface';
-import { CryptoService } from '../../src/auth/crypto.service';
+import { CryptoService } from '../auth/crypto.service';
 import { PaginatedCollection } from '../common/interface/PaginatedCollection';
 import { LoggingService } from '../logging/logging.service';
 
