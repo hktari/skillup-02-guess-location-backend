@@ -31,6 +31,6 @@ async function bootstrap() {
 
   app.use(json({ limit: '5mb' }));
 
-  await app.listen(configService.get<string>('BACKEND_PORT'));
+  await app.listen(configService.getOrThrow<string>('BACKEND_PORT'));
 }
 bootstrap();

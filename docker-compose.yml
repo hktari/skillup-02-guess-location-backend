@@ -3,7 +3,7 @@ version: '3'
 services:
   webserver:
       build: ./nginx/
-      image: hktari/quotesapp-webserver
+      # image: hktari/quotesapp-webserver
       ports:
         - 80:80
         - 443:443
@@ -13,7 +13,7 @@ services:
         - ./certbot/conf/:/etc/nginx/ssl/:ro
       environment:
         - API_HOST=backend
-        - API_PORT=8080
+        - API_PORT=${BACKEND_PORT}
         - DOMAIN=localhost
   certbot:
     image: certbot/certbot:latest
@@ -29,7 +29,7 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
       - NODE_ENV=${NODE_ENV}
-      - PORT=${BACKEND_PORT}
+      - BACKEND_PORT=${BACKEND_PORT}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
       - PGDATABASE=${PGDATABASE}
