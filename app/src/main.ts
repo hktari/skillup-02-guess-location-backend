@@ -6,6 +6,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingService } from './logging/logging.service';
 import { json } from 'express';
 import { ConfigService } from '@nestjs/config';
+import cors = require('cors')
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,7 +21,14 @@ async function bootstrap() {
   // logger.setLogLevels()
 
   app.useLogger(logger)
-  
+
+  var corsOptions = {
+    origin: `*`,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
+  app.use(cors(corsOptions))
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

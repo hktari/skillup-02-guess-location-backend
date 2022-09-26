@@ -21,7 +21,8 @@ export class AuthService {
         if (user && await this.cryptoService.validatePassword(password, user.password)) {
             const payload = { email, sub: user.id };
             return {
-                access_token: this.jwtService.sign(payload),
+                access_token: this.jwtService.sign(payload, { expiresIn: '365d' }),
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
             };
         }
 
