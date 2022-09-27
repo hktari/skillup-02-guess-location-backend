@@ -29,19 +29,20 @@ export class AuthService {
         throw new BadRequestException('Invalid credentials')
     }
 
-    async signup(signupDto: SignupDto) {
-        const existingUser = await this.usersService.getByEmail(signupDto.email)
+    async signup(email: string, password: string, firstName: string, lastName: string, imageUrl: string) {
+        const existingUser = await this.usersService.getByEmail(email)
+        const pwdHash = await this.cryptoService.hashPassword(password)
 
         if (existingUser) {
             throw new BadRequestException('User with that email already exists.')
         }
 
         return this.usersService.create({
-            email: signupDto.email,
-            password: signupDto.password,
-            firstName: signupDto.firstName,
-            lastName: signupDto.lastName,
-            imageUrl: 'TODO'
+            email,
+            password: pwdHash,
+            firstName,
+            lastName,
+            imageUrl
         })
     }
 }

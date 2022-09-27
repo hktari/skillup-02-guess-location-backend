@@ -15,5 +15,5 @@ export class SignupDto {
     lastName: string
 
     @IsString()
-    imageBase64: string
+    imageBase64?: string
 }
