@@ -15,6 +15,8 @@ import CreateLocationDto from '../src/location/dto/CreateLocationDto';
 import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
 import { LocationService } from '../src/location/location.service';
 import { expectLocationEntity, expectGuessLocationEntity } from './common.e2e';
+import { AwsService } from '../src/aws/aws.service';
+import { AwsModule } from '../src/aws/aws.module';
 
 describe('Location', () => {
     let app: INestApplication;
@@ -26,12 +28,16 @@ describe('Location', () => {
     let anotherUser: UserEntity
     let existingLocation: LocationEntity
 
+    const mockAwsService = {
+        uploadImage: () => { return 'https://mock-aws-img-url' }
+    }
+
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AuthModule, LocationModule, DatabaseModule, UserModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            imports: [AwsModule, AuthModule, LocationModule, DatabaseModule, UserModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })]
         })
-            // .overrideProvider(AuthService)
-            // .useValue(authService)
+            .overrideProvider(AwsService)
+            .useValue(mockAwsService)
             .compile();
 
         app = moduleRef.createNestApplication();
@@ -81,7 +87,7 @@ describe('Location', () => {
                         if (i === locationsList.length - 1) {
                             break
                         }
-                        
+
                         const curElement = locationsList[i];
                         const nextElement = locationsList[i + 1]
                         const curLocCreatedDate = new Date(curElement.createdDate)
@@ -277,6 +283,44 @@ describe('Location', () => {
                     expect(res.body.errorInMeters).toBeInstanceOf(Number)
                     done()
                 }).catch(err => done(err))
+        })
+    })
+
+    describe('GET /location/guess?:userId', () => {
+        it('should return an paged collection of guess items', (done) => {
+            const requestParams = {
+                startIdx: 0,
+                pageSize: 10,
+                userId: existingUser.id
+            }
+
+            request(app)
+                .get('/location/guess?userId=' + requestParams.userId)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toHaveProperty('startIdx')
+                    expect(res.body).toHaveProperty('totalItems')
+                    expect(res.body).toHaveProperty('pageSize')
+                    expect(res.body).toHaveProperty('items')
+                    expect(res.body.items).toHaveLength(1)
+                    for (const item of res.body.items) {
+                        expectGuessLocationEntity(item)
+                    }
+                    done()
+                })
+                .catch(err => done(err))
+
+        })
+
+        it('should return empty items array when nothing found', (done) => {
+            request(app)
+                .get('/location/guess?userId=' + anotherUser.id)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body.items).toHaveLength(0)
+                    done()
+                })
+                .catch(err => done(err))
         })
     })
 
