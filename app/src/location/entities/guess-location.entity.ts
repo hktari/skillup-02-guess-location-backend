@@ -8,11 +8,15 @@ export class GuessLocationEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string
 
-    @ManyToOne(() => UserEntity, (user) => user.guesses)
+    @ManyToOne(() => UserEntity, (user) => user.guesses, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn()
     user: UserEntity
 
-    @ManyToOne(() => LocationEntity, (location) => location.guesses)
+    @ManyToOne(() => LocationEntity, (location) => location.guesses, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn()
     location: LocationEntity
 

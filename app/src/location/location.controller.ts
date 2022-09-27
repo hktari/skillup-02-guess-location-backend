@@ -92,6 +92,6 @@ export class LocationController {
 
     await this.locationService.delete(id)
 
-    return res.sendStatus(200)
+    res.sendStatus(200)
   }
 }
