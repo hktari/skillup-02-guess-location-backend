@@ -8,10 +8,33 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: 'eu-central-1' });
 
 
+interface ImageHeader {
+    extension: string,
+    encoding: string,
+}
+
+
 @Injectable()
 export class AwsService {
     constructor(private logger: LoggingService, private configService: ConfigService) {
 
+    }
+
+    // header: data:image/jpeg;base64,...
+    extractHeader(imageBase64: string): ImageHeader {
+        try {
+
+            const imageHeader = imageBase64.substring(0, 22)
+            const imageEncoding = imageHeader.split(';')[1]
+            const imageExt = imageHeader.split(';')[0].split(':')[1].split('/')[1]
+            return {
+                extension: imageExt,
+                encoding: imageEncoding
+            }
+        } catch (error) {
+            this.logger.error('failed to extract image header: ' + imageBase64.substring(0, 22))
+            throw error
+        }
     }
 
     uploadImage(objectId: string, imageBase64: string): Promise<string> {
@@ -23,6 +46,7 @@ export class AwsService {
             var uploadParams = { Bucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME'), Key: `${objectId}.jpeg`, Body: null! };
 
             logger.debug('received imageBase64', 'AwsService')
+            const metadata = this.extractHeader(imageBase64)
 
             const buffer = Buffer.from(imageBase64, "base64");
 
