@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { LoggingService } from '../logging/logging.service'
 import { PassThrough } from 'node:stream';
 import { ConfigService } from '@nestjs/config';
@@ -32,7 +32,7 @@ export class AwsService {
                 encoding: imageEncoding
             }
         } catch (error) {
-            this.logger.error('failed to extract image header: ' + imageBase64.substring(0, 22))
+            this.logger.error('failed to extract image header: ' + imageBase64.substring(0, 22), 'AwsService')
             throw error
         }
     }
@@ -47,8 +47,8 @@ export class AwsService {
         try {
             return imageBase64.substring(23)
         } catch (error) {
-            this.logger.error('failed to extract data from image string: ' + error)
-            this.logger.debug(imageBase64)
+            this.logger.error('failed to extract data from image string: ' + error, 'AwsService')
+            this.logger.debug(imageBase64, 'AwsService')
             throw error
         }
     }
@@ -59,12 +59,22 @@ export class AwsService {
 
             // Create S3 service object
             var s3 = new AWS.S3({ apiVersion: '2006-03-01' });
-            var uploadParams = { Bucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME'), Key: `${objectId}.jpeg`, Body: null! };
 
             logger.debug('received imageBase64', 'AwsService')
-            const metadata = this.extractHeader(imageBase64)
 
-            const buffer = Buffer.from(imageBase64, "base64");
+            const header = this.extractHeader(imageBase64)
+
+            logger.debug(JSON.stringify(header), 'AwsService')
+
+            if (header.encoding !== 'base64') {
+                throw new BadRequestException('unsupported image encoding. expecting base64. got: ' + header.encoding)
+            }
+
+            const imageData = this.extractData(imageBase64)
+
+            var uploadParams = { Bucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME'), Key: `${objectId}.${header.extension}`, Body: null! };
+
+            const buffer = Buffer.from(imageData, "base64");
 
             var base64Stream = new PassThrough();
             base64Stream.write(buffer, "base64")
@@ -73,6 +83,7 @@ export class AwsService {
             uploadParams.Body = base64Stream;
 
             logger.debug('uploading image...', 'AwsService')
+            
             // call S3 to retrieve upload file to specified bucket
             s3.upload(uploadParams, function (err, data) {
                 if (err) {
