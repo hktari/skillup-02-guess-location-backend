@@ -37,6 +37,22 @@ export class AwsService {
         }
     }
 
+    extractData(imageBase64: string) {
+        const header = this.extractHeader(imageBase64)
+        const comma = imageBase64?.substring(22, 23)
+        if (comma !== ',') {
+            throw new Error('Invalid image format. Expecting comma to seperate header and data')
+        }
+
+        try {
+            return imageBase64.substring(23)
+        } catch (error) {
+            this.logger.error('failed to extract data from image string: ' + error)
+            this.logger.debug(imageBase64)
+            throw error
+        }
+    }
+
     uploadImage(objectId: string, imageBase64: string): Promise<string> {
         return new Promise((resolve, reject) => {
             const logger = this.logger
