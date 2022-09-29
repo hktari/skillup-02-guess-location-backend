@@ -8,7 +8,4 @@ export class UpdateUserProfileDto {
 
     @IsString()
     lastName?: string
-
-    @IsString()
-    imageBase64?: string
 }

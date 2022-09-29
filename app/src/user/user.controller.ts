@@ -36,7 +36,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile')
-  updateMyProfile(@Request() req, @Body() { firstName, lastName, imageBase64 }: UpdateUserProfileDto) {
+  updateMyProfile(@Request() req, @Body() { firstName, lastName }: UpdateUserProfileDto) {
     return this.userService.update({
       email: req.user.email,
       firstName: firstName ?? req.user.firstName,
