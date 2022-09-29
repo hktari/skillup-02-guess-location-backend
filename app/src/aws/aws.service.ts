@@ -22,9 +22,8 @@ export class AwsService {
 
     // header: data:image/jpeg;base64,...
     extractHeader(imageBase64: string): ImageHeader {
+        const imageHeader = imageBase64?.substring(0, imageBase64?.indexOf(','))
         try {
-
-            const imageHeader = imageBase64.substring(0, 22)
             const imageEncoding = imageHeader.split(';')[1]
             const imageExt = imageHeader.split(';')[0].split(':')[1].split('/')[1]
             return {
@@ -32,20 +31,20 @@ export class AwsService {
                 encoding: imageEncoding
             }
         } catch (error) {
-            this.logger.error('failed to extract image header: ' + imageBase64.substring(0, 22), 'AwsService')
+            this.logger.error('failed to extract image header: ' + imageHeader, 'AwsService')
             throw error
         }
     }
 
     extractData(imageBase64: string) {
         const header = this.extractHeader(imageBase64)
-        const comma = imageBase64?.substring(22, 23)
-        if (comma !== ',') {
+        const commaIdx = imageBase64?.indexOf(',')
+        if (commaIdx === -1) {
             throw new Error('Invalid image format. Expecting comma to seperate header and data')
         }
 
         try {
-            return imageBase64.substring(23)
+            return imageBase64.substring(commaIdx + 1)
         } catch (error) {
             this.logger.error('failed to extract data from image string: ' + error, 'AwsService')
             this.logger.debug(imageBase64, 'AwsService')
