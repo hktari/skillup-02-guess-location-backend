@@ -23,9 +23,9 @@ export function expectLocationEntity(location: any, expectRelations: boolean = t
     expect(location).toHaveProperty('lng')
     expect(location).toHaveProperty('imageUrl')
     expect(location).toHaveProperty('createdDate')
-    if(expectRelations){
+    if (expectRelations) {
         expect(location).toHaveProperty('user')
-        expect(location).toHaveProperty('guesses')    
+        expect(location).toHaveProperty('guesses')
     }
 }
 
@@ -35,9 +35,9 @@ export function expectGuessLocationEntity(guessLocation: any, expectRelations: b
     expect(guessLocation).toHaveProperty('lng')
     expect(guessLocation).toHaveProperty('address')
     expect(guessLocation).toHaveProperty('errorInMeters')
-    if(expectRelations){
+    if (expectRelations) {
         expect(guessLocation).toHaveProperty('user')
-        expect(guessLocation).toHaveProperty('location')    
+        expect(guessLocation).toHaveProperty('location')
     }
 }
 
@@ -52,4 +52,11 @@ export function expectUserEntity(user: any, expectRelations: boolean = true) {
         expect(user).toHaveProperty('locations')
         expect(user).toHaveProperty('guesses')
     }
+}
+
+export function expectPagedCollection(pagedCollection: any) {
+    expect(pagedCollection).toHaveProperty('startIdx')
+    expect(pagedCollection).toHaveProperty('pageSize')
+    expect(pagedCollection).toHaveProperty('totalItems')
+    expect(pagedCollection).toHaveProperty('items')
 }

@@ -14,7 +14,7 @@ import { LocationEntity } from '../src/location/entities/location.entity';
 import CreateLocationDto from '../src/location/dto/CreateLocationDto';
 import { GuessLocationDto } from '../src/location/dto/GuessLocationDto';
 import { LocationService } from '../src/location/location.service';
-import { expectLocationEntity, expectGuessLocationEntity } from './common.e2e';
+import { expectLocationEntity, expectGuessLocationEntity, expectPagedCollection } from './common.e2e';
 import { AwsService } from '../src/aws/aws.service';
 import { AwsModule } from '../src/aws/aws.module';
 
@@ -183,6 +183,18 @@ describe('Location', () => {
         })
     })
 
+    describe('GET /location/:id/leaderboard', () => {
+        it('should return a paginated collection of GuessLocationEntity', (done) => {
+            request(app.getHttpServer())
+                .get(`/location/${existingLocation.id}/leaderboard`)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expectPagedCollection(res.body)
+                    expect(res.body.items).toHaveLength(1)
+                    done()
+                }).catch(err => done(err))
+        })
+    })
 
     describe('GET /location/random', () => {
         it('should return 200 and a location object', (done) => {
