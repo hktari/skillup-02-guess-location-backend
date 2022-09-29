@@ -8,13 +8,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { PaginationDto } from '../common/dto/PaginationDto';
 import { AwsService } from '../aws/aws.service';
 import { LoggingService } from '../logging/logging.service';
+import { GuessService } from './guess.service';
 const { v4: uuidv4 } = require('uuid');
 
 @Roles('user')
 @Controller('location')
 @UseInterceptors(ClassSerializerInterceptor)
 export class LocationController {
-  constructor(private readonly locationService: LocationService, private awsService: AwsService, private logger: LoggingService) { }
+  constructor(private readonly locationService: LocationService,
+    private guessService: GuessService, private awsService: AwsService, private logger: LoggingService) { }
 
 
   @UseGuards(AuthGuard('jwt'))
@@ -45,6 +47,18 @@ export class LocationController {
   @Get('/random')
   async getRandom() {
     return this.locationService.getRandom()
+  }
+
+  @Get(':id/leaderboard')
+  async getLeaderboards(@Param('id') id: string,
+    @Query('startIdx', new DefaultValuePipe(0), new ParseIntPipe()) startIdx: number,
+    @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number) {
+    const location = await this.locationService.findOne(id)
+    if (!location) {
+      throw new NotFoundException(`Location with id ${id} wasn't found`)
+    }
+
+    return await this.guessService.getByLocation(id, startIdx, pageSize)
   }
 
   @Get(':id')
