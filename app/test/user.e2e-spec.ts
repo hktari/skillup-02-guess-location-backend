@@ -110,6 +110,47 @@ describe('User', () => {
 
     })
 
+
+    describe('GET /user/:id/guess', () => {
+        it('should return a paged collection of guess items', (done) => {
+            const requestParams = {
+                startIdx: 0,
+                pageSize: 10,
+                userId: existingUser.id
+            }
+
+            request(app.getHttpServer())
+                .get(`/user/${requestParams.userId}/guess`)
+                .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toHaveProperty('startIdx')
+                    expect(res.body).toHaveProperty('totalItems')
+                    expect(res.body).toHaveProperty('pageSize')
+                    expect(res.body).toHaveProperty('items')
+                    expect(res.body.items).toHaveLength(1)
+                    for (const item of res.body.items) {
+                        expectGuessLocationEntity(item)
+                    }
+                    done()
+                })
+                .catch(err => done(err))
+
+        })
+
+        it('should return empty items array when nothing found', (done) => {
+            request(app.getHttpServer())
+                .get(`/user/${anotherUser.id}/guess`)
+                .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body.items).toHaveLength(0)
+                    done()
+                })
+                .catch(err => done(err))
+        })
+    })
+
     describe('GET /user/my-profile', () => {
         it('should return 401 when no Authentication header', (done) => {
             request(app.getHttpServer())
@@ -213,45 +254,6 @@ describe('User', () => {
                 .send(changePasswordDto)
                 .expect(200)
                 .then(res => done())
-                .catch(err => done(err))
-        })
-    })
-
-
-    describe('GET /user/:id/guess', () => {
-        it('should return a paged collection of guess items', (done) => {
-            const requestParams = {
-                startIdx: 0,
-                pageSize: 10,
-                userId: existingUser.id
-            }
-
-            request(app)
-                .get(`/user/${requestParams.userId}/guess`)
-                .then(res => {
-                    expect(res.statusCode).toBe(200)
-                    expect(res.body).toHaveProperty('startIdx')
-                    expect(res.body).toHaveProperty('totalItems')
-                    expect(res.body).toHaveProperty('pageSize')
-                    expect(res.body).toHaveProperty('items')
-                    expect(res.body.items).toHaveLength(1)
-                    for (const item of res.body.items) {
-                        expectGuessLocationEntity(item)
-                    }
-                    done()
-                })
-                .catch(err => done(err))
-
-        })
-
-        it('should return empty items array when nothing found', (done) => {
-            request(app)
-                .get(`/user/${anotherUser.id}/guess`)
-                .then(res => {
-                    expect(res.statusCode).toBe(200)
-                    expect(res.body.items).toHaveLength(0)
-                    done()
-                })
                 .catch(err => done(err))
         })
     })
