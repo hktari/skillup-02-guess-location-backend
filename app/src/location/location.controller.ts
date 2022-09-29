@@ -1,4 +1,4 @@
-import { Response, Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request, UseInterceptors, ClassSerializerInterceptor, UnauthorizedException, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Response, Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, Request, UseInterceptors, ClassSerializerInterceptor, UnauthorizedException, NotFoundException, BadRequestException, ForbiddenException, Req } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserEntity } from '../user/entities/user.entity';
 import CreateLocationDto from './dto/CreateLocationDto';
@@ -41,6 +41,16 @@ export class LocationController {
     @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number
   ) {
     return this.locationService.findAll(startIdx, pageSize)
+  }
+
+  @Get('to-guess')
+  @UseGuards(AuthGuard('jwt'))
+  getLocationsToGuess(
+    @Req() req,
+    @Query('startIdx', new DefaultValuePipe(0), new ParseIntPipe()) startIdx: number,
+    @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number
+  ) {
+    return this.locationService.findLocationsToGuess(req.user.id, startIdx, pageSize)
   }
 
 

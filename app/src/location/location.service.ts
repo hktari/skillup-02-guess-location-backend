@@ -35,6 +35,23 @@ export class LocationService {
         return await this.locationRepository.save(locationEntity)
     }
 
+    async findLocationsToGuess(userId: string, startIdx: number, pageSize: number): Promise<PaginatedCollection<LocationEntity>> {
+        const [locations, totalItems] = await this.locationRepository.createQueryBuilder("location")
+            .leftJoin("location.guesses", "guess")
+            .where("guess.userId != :userId", { userId })
+            .orderBy("location.createdDate", "DESC")
+            .skip(startIdx)
+            .limit(pageSize)
+            .getManyAndCount()
+
+        return {
+            startIdx,
+            pageSize,
+            totalItems,
+            items: locations
+        }
+    }
+
     async findAll(startIdx: number, pageSize: number): Promise<PaginatedCollection<LocationEntity>> {
         const [items, totalItems] = await this.locationRepository.findAndCount({
             skip: startIdx,
@@ -75,7 +92,7 @@ export class LocationService {
         location.lat = lat
         location.lng = lng
         location.imageUrl = imageUrl
-        
+
         return this.locationRepository.save(location)
     }
 

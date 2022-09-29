@@ -292,10 +292,50 @@ describe('Location', () => {
                 .then(res => {
                     expect(res.statusCode).toBe(201)
                     expectGuessLocationEntity(res.body)
-                    expect(res.body.errorInMeters).toBeInstanceOf(Number)
+                    expect(typeof res.body.errorInMeters).toBe('number')
                     done()
                 }).catch(err => done(err))
         })
+    })
+
+
+    describe('GET /location/to-guess', () => {
+        it('should return 401 when invalid authentication header', (done) => {
+            request(app.getHttpServer())
+                .get('/location/to-guess')
+                .then(res => {
+                    expect(res.statusCode).toBe(401)
+                    done()
+                }).catch(err => done(err))
+        })
+
+        it('should return 200 and LocationEntity paged collection ', (done) => {
+            request(app.getHttpServer())
+                .get('/location/to-guess')
+                .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expectPagedCollection(res.body)
+                    for (const item of res.body.items) {
+                        expectLocationEntity(item, false)
+                    }
+                    done()
+                }).catch(err => done(err))
+
+        })
+
+        it('should not return the already guessed location', (done) => {
+            const alreadyGuessed = existingLocation
+
+            request(app.getHttpServer())
+            .get('/location/to-guess')
+            .auth(accessToken, { type: 'bearer' })
+                .then(res => {
+                    expect(res.body.items).not.toContainEqual(alreadyGuessed)
+                    done()
+                }).catch(err => done(err))
+        })
+
     })
 
     afterAll(async () => {
