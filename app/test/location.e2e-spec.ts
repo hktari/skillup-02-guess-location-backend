@@ -68,7 +68,7 @@ describe('Location', () => {
                     expect(res.body).toHaveProperty('items')
 
                     for (const location of res.body.items) {
-                        expectLocationEntity(location)
+                        expectLocationEntity(location, false)
                     }
 
                     done()
