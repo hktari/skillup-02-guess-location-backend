@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, NestInterceptor } from '@nestjs/common';
 import { AuthService } from '../src/auth/auth.service';
 import { DatabaseModule } from '../src/database/database.module';
 import { ConfigModule } from '@nestjs/config';
@@ -16,6 +16,10 @@ import { UpdateUserProfileDto } from '../src/user/dto/UpdateUserProfileDto';
 import { ChangePasswordDto } from '../src/user/dto/ChangePasswordDto';
 import { LoggingModule } from '../src/logging/logging.module';
 import { LoggingService } from '../src/logging/logging.service';
+import { AwsModule } from '../src/aws/aws.module';
+import { LoggingMiddleware } from '../src/common/middleware/logging.middleware';
+import { Request, Response, NextFunction } from 'express';
+
 
 describe('User', () => {
     let app: INestApplication;
@@ -30,12 +34,17 @@ describe('User', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [LoggingModule, UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
-        })
-            .compile();
+            imports: [AwsModule, LoggingModule, UserModule, AuthModule, LocationModule, DatabaseModule, ConfigModule.forRoot({ envFilePath: '../test.env', isGlobal: true, })],
+            providers: [LoggingMiddleware]
+        }).compile();
 
         app = moduleRef.createNestApplication({ bufferLogs: true });
         app.useLogger(app.get<LoggingService>(LoggingService))
+        app.use((req: Request, res: Response, next: NextFunction) => {
+            const logger = app.get<LoggingService>(LoggingService)
+            logger.log(`[${req.method}]: ${req.originalUrl}`);
+            next();
+        })
 
         await app.init();
         authService = moduleRef.get<AuthService>(AuthService)
@@ -204,6 +213,45 @@ describe('User', () => {
                 .send(changePasswordDto)
                 .expect(200)
                 .then(res => done())
+                .catch(err => done(err))
+        })
+    })
+
+
+    describe('GET /user/:id/guess', () => {
+        it('should return a paged collection of guess items', (done) => {
+            const requestParams = {
+                startIdx: 0,
+                pageSize: 10,
+                userId: existingUser.id
+            }
+
+            request(app)
+                .get(`/user/${requestParams.userId}/guess`)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body).toHaveProperty('startIdx')
+                    expect(res.body).toHaveProperty('totalItems')
+                    expect(res.body).toHaveProperty('pageSize')
+                    expect(res.body).toHaveProperty('items')
+                    expect(res.body.items).toHaveLength(1)
+                    for (const item of res.body.items) {
+                        expectGuessLocationEntity(item)
+                    }
+                    done()
+                })
+                .catch(err => done(err))
+
+        })
+
+        it('should return empty items array when nothing found', (done) => {
+            request(app)
+                .get(`/user/${anotherUser.id}/guess`)
+                .then(res => {
+                    expect(res.statusCode).toBe(200)
+                    expect(res.body.items).toHaveLength(0)
+                    done()
+                })
                 .catch(err => done(err))
         })
     })

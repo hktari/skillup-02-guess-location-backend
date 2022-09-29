@@ -286,44 +286,6 @@ describe('Location', () => {
         })
     })
 
-    describe('GET /location/guess?:userId', () => {
-        it('should return an paged collection of guess items', (done) => {
-            const requestParams = {
-                startIdx: 0,
-                pageSize: 10,
-                userId: existingUser.id
-            }
-
-            request(app)
-                .get('/location/guess?userId=' + requestParams.userId)
-                .then(res => {
-                    expect(res.statusCode).toBe(200)
-                    expect(res.body).toHaveProperty('startIdx')
-                    expect(res.body).toHaveProperty('totalItems')
-                    expect(res.body).toHaveProperty('pageSize')
-                    expect(res.body).toHaveProperty('items')
-                    expect(res.body.items).toHaveLength(1)
-                    for (const item of res.body.items) {
-                        expectGuessLocationEntity(item)
-                    }
-                    done()
-                })
-                .catch(err => done(err))
-
-        })
-
-        it('should return empty items array when nothing found', (done) => {
-            request(app)
-                .get('/location/guess?userId=' + anotherUser.id)
-                .then(res => {
-                    expect(res.statusCode).toBe(200)
-                    expect(res.body.items).toHaveLength(0)
-                    done()
-                })
-                .catch(err => done(err))
-        })
-    })
-
     afterAll(async () => {
         await app?.close();
     })

@@ -8,9 +8,10 @@ import { JwtStrategy } from './jwt.strategy'
 import { ConfigService } from '@nestjs/config'
 import { CryptoService } from './crypto.service';
 import { LoggingModule } from '../logging/logging.module';
+import { AwsModule } from '../aws/aws.module';
 
 @Module({
-    imports: [LoggingModule, UserModule,
+    imports: [AwsModule, LoggingModule, UserModule,
         PassportModule,
         JwtModule.registerAsync(
             {

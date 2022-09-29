@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Param, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserEntity } from '../user/entities/user.entity';
 import { User } from '../common/decorators/user.decorator'
 import { GuessLocationDto } from './dto/GuessLocationDto';

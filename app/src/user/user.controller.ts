@@ -63,9 +63,20 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put('my-profile/password')
-  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body(new ValidationPipe()) { password }: ChangePasswordDto) {
+  async updateMyPassword(@Request() req, @Response() res: ExpressResponse, @Body() { password }: ChangePasswordDto) {
     await this.userService.setPassword(req.user.email, password)
     return res.sendStatus(200)
+  }
+
+  @Get(':id/guess')
+  async getLocationGuesses(@Param('id') id: string) {
+    const user = await this.userService.getOne(id)
+
+    if (!user) {
+      throw new NotFoundException(`Faild to find user with id ${id}`)
+    }
+
+    return user.guesses
   }
 
   @Get(':id')
