@@ -128,7 +128,7 @@ describe('User', () => {
                     expect(res.body).toHaveProperty('totalItems')
                     expect(res.body).toHaveProperty('pageSize')
                     expect(res.body).toHaveProperty('items')
-                    expect(res.body.items).toHaveLength(1)
+                    expect(res.body.items).toHaveLength(5)
                     for (const item of res.body.items) {
                         expectGuessLocationEntity(item)
                     }

@@ -12,7 +12,10 @@ export class GuessService {
     }
 
     async getByUser(userId: string, startIdx: number = 0, pageSize: number = -1): Promise<PaginatedCollection<GuessLocationEntity>> {
-        const [items, totalItems] = await this.guessLocationRepository.findAndCountBy({ user: { id: userId } })
+        const [items, totalItems] = await this.guessLocationRepository.findAndCount({
+            where: { user: { id: userId } },
+            relations: { user: true, location: true }
+        })
         return {
             startIdx,
             pageSize,
@@ -21,5 +24,5 @@ export class GuessService {
         }
     }
 
-    
+
 }

@@ -37,7 +37,7 @@ export default class UserSeeder implements Seeder {
         const anotherUser = await userFactory.save({ email: 'another.user@example.com' })
 
 
-        for (const user of [existingUser, anotherUser]) {
+        for (const user of [existingUser]) {
             // create location entries
             const locationFactory = await factoryManager.get(LocationEntity)
             await locationFactory.saveMany(5, { user: user })
