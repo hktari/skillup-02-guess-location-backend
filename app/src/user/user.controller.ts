@@ -8,12 +8,14 @@ import { Response as ExpressResponse, Request as ExRequest } from 'express';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import { LoggingService } from '../logging/logging.service';
 import { AwsService } from '../aws/aws.service';
+import { GuessService } from '../location/guess.service';
 
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService, private logger: LoggingService, private awsService: AwsService) {
+  constructor(private readonly userService: UserService, private logger: LoggingService, private awsService: AwsService,
+    private guessService: GuessService) {
 
   }
 
@@ -69,14 +71,17 @@ export class UserController {
   }
 
   @Get(':id/guess')
-  async getLocationGuesses(@Param('id') id: string) {
+  async getLocationGuesses(
+    @Param('id') id: string,
+    @Query('startIdx', new DefaultValuePipe(0), new ParseIntPipe()) startIdx: number,
+    @Query('pageSize', new DefaultValuePipe(10), new ParseIntPipe()) pageSize: number) {
     const user = await this.userService.getOne(id)
 
     if (!user) {
       throw new NotFoundException(`Faild to find user with id ${id}`)
     }
 
-    return user.guesses
+    return this.guessService.getByUser(id, startIdx, pageSize)
   }
 
   @Get(':id')
