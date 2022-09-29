@@ -64,7 +64,7 @@ describe('Location', () => {
                 .then(res => {
                     expect(res.body).toHaveProperty('startIdx', 0)
                     expect(res.body).toHaveProperty('pageSize', 10)
-                    expect(res.body).toHaveProperty('totalItems', 25)
+                    expect(res.body).toHaveProperty('totalItems', 20)
                     expect(res.body).toHaveProperty('items')
 
                     for (const location of res.body.items) {

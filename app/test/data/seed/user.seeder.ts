@@ -48,5 +48,11 @@ export default class UserSeeder implements Seeder {
                 await guessFactory.save({ user: user, location: location })
             }
         }
+
+        for (const user of [anotherUser]) {
+            // create location entries
+            const locationFactory = await factoryManager.get(LocationEntity)
+            await locationFactory.saveMany(5, { user: user })
+        }
     }
 }
