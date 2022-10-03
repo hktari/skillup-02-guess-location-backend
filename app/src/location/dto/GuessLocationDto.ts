@@ -1,12 +1,12 @@
-import { IsString, IsNumber} from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 
-export class GuessLocationDto{
-    @IsString()
-    address: string
+export class GuessLocationDto {
+  @IsString()
+  address: string;
 
-    @IsNumber()
-    lat: number
+  @IsNumber()
+  lat: number;
 
-    @IsNumber()
-    lng: number
+  @IsNumber()
+  lng: number;
 }

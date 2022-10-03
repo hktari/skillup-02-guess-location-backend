@@ -5,6 +5,6 @@ import { AwsService } from './aws.service';
 @Module({
   imports: [LoggingModule],
   providers: [AwsService],
-  exports: [AwsService]
+  exports: [AwsService],
 })
-export class AwsModule { }
+export class AwsModule {}

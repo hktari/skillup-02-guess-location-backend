@@ -1,20 +1,18 @@
-import { IsString, IsNumber} from 'class-validator';
-import { Base64ToByteTransform } from '../../common/decorators/base64.transform';
+import { IsString, IsNumber } from 'class-validator';
 
-export class CreateUserDto{
-    @IsString()
-    firstName:string
+export class CreateUserDto {
+  @IsString()
+  firstName: string;
 
-    @IsString()
-    lastName: string
+  @IsString()
+  lastName: string;
 
-    @IsString()
-    email: string
+  @IsString()
+  email: string;
 
-    @IsString()
-    password: string
+  @IsString()
+  password: string;
 
-    @IsString()
-    image: string
-
+  @IsString()
+  image: string;
 }

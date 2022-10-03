@@ -1,9 +1,8 @@
-import { IsNumber } from "class-validator"
+import { IsNumber } from 'class-validator';
 export class PaginationDto {
+  @IsNumber()
+  startIdx: number;
 
   @IsNumber()
-  startIdx: number
-
-  @IsNumber()
-  pageSize: Number
+  pageSize: number;
 }

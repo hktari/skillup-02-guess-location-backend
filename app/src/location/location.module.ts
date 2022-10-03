@@ -13,9 +13,21 @@ import { AwsModule } from '../aws/aws.module';
 import { GuessService } from './guess.service';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => UserModule), LoggingModule, AwsModule],
+  imports: [
+    DatabaseModule,
+    forwardRef(() => UserModule),
+    LoggingModule,
+    AwsModule,
+  ],
   controllers: [LocationController, GuessLocationController],
-  providers: [LocationService, GuessService, ...locationProviders, UserService, ...userProviders, CryptoService],
-  exports: [LocationService, GuessService, ...locationProviders]
+  providers: [
+    LocationService,
+    GuessService,
+    ...locationProviders,
+    UserService,
+    ...userProviders,
+    CryptoService,
+  ],
+  exports: [LocationService, GuessService, ...locationProviders],
 })
-export class LocationModule { }
+export class LocationModule {}

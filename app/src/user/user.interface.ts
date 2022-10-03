@@ -1,7 +1,7 @@
-export class User{
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-    imageUrl: string
+export class User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  imageUrl: string;
 }

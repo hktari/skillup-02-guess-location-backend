@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockUserProviders } from '../user/providers/mock.user.provider';
-import { UserModule } from '../user/user.module';
 import { LocationController } from './location.controller';
-import { LocationModule } from './location.module';
 import { LocationService } from './location.service';
 import { mocklocationProviders } from './providers/mock.location.providers';
 
@@ -12,7 +10,11 @@ describe('LocationController', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LocationController],
-      providers: [LocationService, ...mocklocationProviders, ...mockUserProviders],
+      providers: [
+        LocationService,
+        ...mocklocationProviders,
+        ...mockUserProviders,
+      ],
     }).compile();
 
     controller = module.get<LocationController>(LocationController);

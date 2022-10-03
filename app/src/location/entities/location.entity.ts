@@ -1,38 +1,49 @@
-import { UserEntity } from '../../user/entities/user.entity'
-import { CreateDateColumn, Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm'
-import { GuessLocationEntity } from './guess-location.entity'
+import { UserEntity } from '../../user/entities/user.entity';
+import {
+  CreateDateColumn,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { GuessLocationEntity } from './guess-location.entity';
 
 @Entity()
 export class LocationEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @ManyToOne(() => UserEntity, (user) => user.locations)
-    @JoinColumn()
-    user: UserEntity
+  @ManyToOne(() => UserEntity, (user) => user.locations)
+  @JoinColumn()
+  user: UserEntity;
 
-    @OneToMany(() => GuessLocationEntity, (guessLocation) => guessLocation.location,
-        {
-            cascade: true,
-        })
-    guesses: GuessLocationEntity[]
+  @OneToMany(
+    () => GuessLocationEntity,
+    (guessLocation) => guessLocation.location,
+    {
+      cascade: true,
+    },
+  )
+  guesses: GuessLocationEntity[];
 
-    @Column()
-    imageUrl: string
+  @Column()
+  imageUrl: string;
 
-    @Column({
-        type: 'float'
-    })
-    lat: number
+  @Column({
+    type: 'float',
+  })
+  lat: number;
 
-    @Column({
-        type: 'float'
-    })
-    lng: number
+  @Column({
+    type: 'float',
+  })
+  lng: number;
 
-    @Column()
-    address: string
+  @Column()
+  address: string;
 
-    @CreateDateColumn()
-    createdDate: Date
+  @CreateDateColumn()
+  createdDate: Date;
 }
