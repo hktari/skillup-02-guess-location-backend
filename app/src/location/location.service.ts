@@ -25,7 +25,7 @@ export class LocationService {
     @Inject(GuessLocationRepository)
     private guessLocationRepository: Repository<GuessLocationEntity>,
     private userService: UserService,
-  ) {}
+  ) { }
 
   async create(user: UserEntity, location: Location) {
     if (!user) {
@@ -48,10 +48,19 @@ export class LocationService {
     startIdx: number,
     pageSize: number,
   ): Promise<PaginatedCollection<LocationEntity>> {
+
+
+
     const [locations, totalItems] = await this.locationRepository
       .createQueryBuilder('location')
-      .leftJoin('location.guesses', 'guess')
-      .where('guess.userId != :userId', { userId })
+      .where(qb => {
+        const subQuery = qb.subQuery()
+          .select("guess.locationId")
+          .from(GuessLocationEntity, "guess")
+          .where('guess.userId = :userId', { userId })
+          .getQuery();
+        return "location.id not in " + subQuery;
+      })
       .orderBy('location.createdDate', 'DESC')
       .skip(startIdx)
       .limit(pageSize)
