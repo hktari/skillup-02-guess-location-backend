@@ -21,12 +21,12 @@ async function bootstrap() {
 
   app.useLogger(logger);
 
-  const corsOptions = {
-    origin: `*`,
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  };
+  // const corsOptions = {
+  //   origin: `*`,
+  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  // };
 
-  app.use(cors(corsOptions));
+  // app.use(cors(corsOptions));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -35,7 +35,7 @@ async function bootstrap() {
     }),
   );
 
-  app.use(json({ limit: '5mb' }));
+  app.use(json({ limit: configService.get<string>('MAX_REQUEST_SIZE') ?? '10mb' }));
 
   await app.listen(configService.getOrThrow<string>('BACKEND_PORT'));
 }
