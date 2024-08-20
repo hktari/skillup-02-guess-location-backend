@@ -21,7 +21,11 @@ export class UserService {
   ) {}
 
   async create(user: User) {
-    const userEntity = this.userRepository.create(user);
+    const pwdHash = await this.cryptoService.hashPassword(user.password);
+    const userEntity = this.userRepository.create({
+      ...user,
+      password: pwdHash,
+    });
     return this.userRepository.save(userEntity);
   }
 

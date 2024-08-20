@@ -7,6 +7,7 @@ import { LoggingService } from './logging/logging.service';
 import { json } from 'express';
 import { ConfigService } from '@nestjs/config';
 import cors = require('cors');
+import { UserService } from './user/user.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -35,7 +36,26 @@ async function bootstrap() {
     }),
   );
 
-  app.use(json({ limit: configService.get<string>('MAX_REQUEST_SIZE') ?? '10mb' }));
+  // create demo user
+  const demoUser = {
+    email: 'demo@example.com',
+    password: 'secret',
+    firstName: 'Demo',
+    imageUrl: null,
+    lastName: 'User',
+  };
+
+  const demoUserAdded = !!(await app
+    .get(UserService)
+    .getByEmail('demo@example.com'));
+  if (!demoUserAdded) {
+    logger.log('creating demo user...');
+    await app.get(UserService).create(demoUser);
+  }
+
+  app.use(
+    json({ limit: configService.get<string>('MAX_REQUEST_SIZE') ?? '10mb' }),
+  );
 
   await app.listen(configService.getOrThrow<string>('BACKEND_PORT'));
 }

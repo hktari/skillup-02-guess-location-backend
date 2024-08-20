@@ -42,7 +42,6 @@ export class AuthService {
     imageUrl: string,
   ) {
     const existingUser = await this.usersService.getByEmail(email);
-    const pwdHash = await this.cryptoService.hashPassword(password);
 
     if (existingUser) {
       throw new BadRequestException('User with that email already exists.');
@@ -50,7 +49,7 @@ export class AuthService {
 
     return this.usersService.create({
       email,
-      password: pwdHash,
+      password,
       firstName,
       lastName,
       imageUrl,
