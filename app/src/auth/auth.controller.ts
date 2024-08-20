@@ -5,7 +5,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { AwsService, IAwsService } from '../aws/aws.service';
+import { AwsService } from '../aws/aws.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -17,7 +17,7 @@ const { v4: uuidv4 } = require('uuid');
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private awsService: IAwsService,
+    private awsService: AwsService,
   ) {}
 
   @Post('login')

@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { IAwsService } from './aws.service';
 
 @Injectable()
-export class MockAwsService implements IAwsService {
+export class MockAwsService {
   constructor() {}
 
   uploadImage(objectId: string, imageBase64: string): Promise<string> {

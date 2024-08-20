@@ -23,7 +23,7 @@ import CreateLocationDto from './dto/CreateLocationDto';
 import { UpdateLocationDto } from './dto/UpdateLocationDto';
 import { LocationService } from './location.service';
 import { AuthGuard } from '@nestjs/passport';
-import { AwsService, IAwsService } from '../aws/aws.service';
+import { AwsService } from '../aws/aws.service';
 import { LoggingService } from '../logging/logging.service';
 import { GuessService } from './guess.service';
 const { v4: uuidv4 } = require('uuid');
@@ -35,7 +35,7 @@ export class LocationController {
   constructor(
     private readonly locationService: LocationService,
     private guessService: GuessService,
-    private awsService: IAwsService,
+    private awsService: AwsService,
     private logger: LoggingService,
   ) {}
 
