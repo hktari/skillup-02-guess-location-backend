@@ -21,7 +21,7 @@ import { UserService } from './user.service';
 import { Response as ExpressResponse } from 'express';
 import { ChangePasswordDto } from './dto/ChangePasswordDto';
 import { LoggingService } from '../logging/logging.service';
-import { AwsService } from '../aws/aws.service';
+import { AwsService, IAwsService } from '../aws/aws.service';
 import { GuessService } from '../location/guess.service';
 
 @Controller('user')
@@ -30,7 +30,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private logger: LoggingService,
-    private awsService: AwsService,
+    private awsService: IAwsService,
     private guessService: GuessService,
   ) {}
 

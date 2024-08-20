@@ -12,8 +12,12 @@ interface ImageHeader {
   encoding: string;
 }
 
+export interface IAwsService {
+  uploadImage(objectId: string, imageBase64: string): Promise<string>;
+}
+
 @Injectable()
-export class AwsService {
+export class AwsService implements IAwsService {
   constructor(
     private logger: LoggingService,
     private configService: ConfigService,
