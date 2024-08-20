@@ -35,6 +35,14 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Deployment
+
+1. deploy postgres DB
+2. configure .env
+3. `npm run typeorm`
+4. deploy nest app
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
