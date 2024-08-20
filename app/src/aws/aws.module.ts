@@ -5,7 +5,12 @@ import { MockAwsService } from './mockAws.service';
 
 @Module({
   imports: [LoggingModule],
-  providers: [MockAwsService],
-  exports: [MockAwsService],
+  providers: [
+    {
+      provide: AwsService,
+      useClass: MockAwsService,
+    },
+  ],
+  exports: [AwsService],
 })
 export class AwsModule {}
